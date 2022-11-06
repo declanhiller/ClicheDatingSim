@@ -8,6 +8,4 @@ public class Story : ScriptableObject{
     [SerializeField]
     public StoryEvent start;
     public List<StoryEvent> allEvents = new List<StoryEvent>();
-    public List<Connection> allConnections = new List<Connection>();
-
 }

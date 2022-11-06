@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class StoryEvent {
     public string eventName;
-    public List<Connection> childEvents = new List<Connection>();
+    public List<StoryEvent> childEvents = new List<StoryEvent>();
     protected EventManager eventManager;
 
     internal void Start() {

@@ -10,11 +10,10 @@ public class StoryEditor : EditorWindow {
     private List<EventNode> allEventNodes = new List<EventNode>();
     
     private Vector2 mousePos;
+
+    private EventNode hoveringOverNode;
     
-    public const int WIDTH = 200;
-    public const int HEIGHT = 200;
-    
-    
+
     [MenuItem("Window/Story Creator")]   
     static void ShowEditor() {     
         StoryEditor editor = EditorWindow.GetWindow<StoryEditor>();      
@@ -27,7 +26,6 @@ public class StoryEditor : EditorWindow {
     }
 
     private void OnSelectionChange() {
-        
         DetectStory();
     }
 
@@ -35,13 +33,88 @@ public class StoryEditor : EditorWindow {
         EventNodeFactory.SetupFactory();
     }
  
-    void OnGUI() {
+    void OnGUI()
+    {
 
-        RenderStory();
+        if (story != null)
+        {
+            RenderConnections();
+            RenderCurrentConnectionLine();
+            RenderStory();
 
-        mousePos = Event.current.mousePosition;
-        
-        DisplayContextMenu();
+            List<EventNode> mouseOverNodes = GetMouseOverNodes();
+
+            hoveringOverNode = mouseOverNodes.Count > 0 ? mouseOverNodes[0] : null;
+            
+            mousePos = Event.current.mousePosition;
+
+            ProcessEventTypes();
+        }
+
+    }
+
+    private void RenderCurrentConnectionLine()
+    {
+        if (connectionNode != null)
+        {
+            RenderNodeCurve(connectionNode.rect.center, mousePos);
+            Repaint();
+        }
+    }
+
+    private void RenderConnections()
+    {
+        EventNode[] copiedArray = new EventNode[story.allEvents.Count];
+        allEventNodes.CopyTo(copiedArray);
+        List<EventNode> copiedList = new List<EventNode>(copiedArray);
+
+        while (copiedList.Count != 0)
+        {
+            RenderConnectionsRecursively(copiedList, copiedList[0]);
+        }
+    }
+
+    private void RenderConnectionsRecursively(List<EventNode> copiedList, EventNode parentNode)
+    {
+        copiedList.Remove(parentNode);
+        List<EventNode> childEventNodes = parentNode.children;
+        foreach (EventNode node in childEventNodes)
+        {
+            RenderNodeCurve(parentNode.rect, node.rect);
+            RenderConnectionsRecursively(copiedList, node);
+        }
+    }
+
+    private void ProcessEventTypes()
+    {
+        Event current = Event.current;
+        switch (current.type)
+        {
+            case EventType.ContextClick:
+                DisplayContextMenu(current);
+                break;
+            case EventType.MouseDrag:
+                DragNode(current);
+                break;
+            case EventType.MouseDown:
+                ConnectNode(current);
+                break;
+            
+        }
+    }
+
+    private void ConnectNode(Event current)
+    {
+        if (connectionNode != null)
+        {
+            if (hoveringOverNode != null)
+            {
+                connectionNode.storyEvent.childEvents.Add(hoveringOverNode.storyEvent);
+                connectionNode.children.Add(hoveringOverNode);
+            }
+        }
+
+        connectionNode = null;
     }
 
     private void RenderStory() {
@@ -78,6 +151,8 @@ public class StoryEditor : EditorWindow {
             Dialogue dialogue = new Dialogue();
             dialogue.eventName = "Dialogue";
             story.allEvents.Add(dialogue);
+            EventNode eventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, dialogue);
+            allEventNodes.Add(eventNode);
         }
         AssetDatabase.SaveAssets();
     }
@@ -95,9 +170,14 @@ public class StoryEditor : EditorWindow {
         }
     }
 
-    void DrawNodeCurve(Rect start, Rect end) {
+    void RenderNodeCurve(Rect start, Rect end) {
         Vector3 startPos = new Vector3(start.x + start.width, start.y + start.height / 2, 0);      
-        Vector3 endPos = new Vector3(end.x, end.y + end.height / 2, 0);    
+        Vector3 endPos = new Vector3(end.x, end.y + end.height / 2, 0);
+        RenderNodeCurve(startPos, endPos);
+    }
+
+    void RenderNodeCurve(Vector3 startPos, Vector3 endPos)
+    {
         Vector3 startTan = startPos + Vector3.right * 50;      
         Vector3 endTan = endPos + Vector3.left * 50;       
         Color shadowCol = new Color(0, 0, 0, 0.06f);       
@@ -106,43 +186,76 @@ public class StoryEditor : EditorWindow {
         Handles.DrawBezier(startPos, endPos, startTan, endTan, Color.black, null, 1);
     }
 
-    private void DisplayContextMenu() {
-        Event current = Event.current;
+    private void DisplayContextMenu(Event current) {
         
-        if(mouseOverWindow &&  current.type == EventType.ContextClick) {
-            List<EventNode> hoveringOverEventNode = new List<EventNode>();
-            foreach (EventNode eventNode in allEventNodes) {
-                if (eventNode.rect.Contains(mousePos)) {
-                    hoveringOverEventNode.Add(eventNode);
-                }
-            }
-
-
-            if (hoveringOverEventNode.Count == 0) {
+        if(mouseOverWindow)
+        {
+            if (hoveringOverNode == null) {
                 DisplayRegularContextMenu(current);
             } else {
-                DisplaySpecialContextMenu(current, hoveringOverEventNode[0]);
+                DisplaySpecialContextMenu(current, hoveringOverNode);
             }
 
         }
     }
 
-    
-    
+    private List<EventNode> GetMouseOverNodes()
+    {
+        List<EventNode> hoveringOverEventNode = new List<EventNode>();
+        foreach (EventNode eventNode in allEventNodes) {
+            if (eventNode.rect.Contains(mousePos)) {
+                hoveringOverEventNode.Add(eventNode);
+            }
+        }
+
+        return hoveringOverEventNode;
+    }
+
+
+    private EventNode rightClickedNode;
     private void DisplaySpecialContextMenu(Event current, EventNode eventNode) {
         GenericMenu menu = new GenericMenu();
+
+        rightClickedNode = eventNode;
             
         menu.AddItem(new GUIContent("Delete"), false, Delete);
+        menu.AddItem(new GUIContent("CreateTransition"), false, CreateConnection);
         
         menu.ShowAsContext();
  
         current.Use(); 
     }
 
-    public void Delete() {
-        
+    private EventNode connectionNode;
+    private void CreateConnection()
+    {
+        connectionNode = rightClickedNode;
     }
 
+    public void Delete() {
+        if (rightClickedNode != null)
+        {
+            if (rightClickedNode.storyEvent == story.start)
+            {
+                story.start = null;
+            }
+            story.allEvents.Remove(rightClickedNode.storyEvent);
+            allEventNodes.Remove(rightClickedNode);
+            rightClickedNode = null;
+        }
+    }
+
+    private void DragNode(Event current)
+    {
+        if (hoveringOverNode != null)
+        {
+            hoveringOverNode.rect.position += current.delta;
+            GUI.changed = true;
+        }
+    }
+
+    
+    
     private void DisplayRegularContextMenu(Event current) {
         GenericMenu menu = new GenericMenu();
             
