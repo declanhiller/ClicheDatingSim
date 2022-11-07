@@ -13,7 +13,7 @@ public class StoryEditor : EditorWindow {
     private Vector2 mousePos;
 
     private UIEventNode hoveringOverNode;
-    private UIEventNode lastSelectedNode;
+    private UIEventNode selectedNode;
 
     private StoryInspector storyInspector;
 
@@ -21,7 +21,6 @@ public class StoryEditor : EditorWindow {
     static StoryEditor ShowEditor() {     
         StoryEditor editor = EditorWindow.GetWindow<StoryEditor>();      
         editor.Init();
-        StoryInspector.SetStyles();
         return editor;
     }
 
@@ -144,7 +143,7 @@ public class StoryEditor : EditorWindow {
 
         connectionNode = null;
         
-        lastSelectedNode = hoveringOverNode;
+        selectedNode = hoveringOverNode;
         
         Repaint();
     }
@@ -152,7 +151,7 @@ public class StoryEditor : EditorWindow {
     private void RenderStory() {
         for (int i = 0; i < allEventNodes.Count; i++) {
             UIEventNode storyUIEvent = allEventNodes[i];
-            if (storyUIEvent == lastSelectedNode)
+            if (storyUIEvent == selectedNode)
             {
                 storyUIEvent.DrawSelected();
             }
@@ -354,9 +353,9 @@ public class StoryEditor : EditorWindow {
         }
 
 
-        if (lastSelectedNode != null)
+        if (selectedNode != null)
         {
-            storyInspector.Render(lastSelectedNode.storyEvent, this);
+            storyInspector.Render(selectedNode.storyEvent, this);
         }
     }
 
