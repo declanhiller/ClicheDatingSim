@@ -1,12 +1,12 @@
 ﻿public class EventNodeFactory {
     
-    public static EventNode createNode(float x, float y, StoryEvent storyEvent) {
-        EventNode eventNode = new EventNode(x, y, storyEvent);
-        return eventNode;
+    public static UIEventNode createNode(float x, float y, StoryEvent storyEvent) {
+        UIEventNode uiEventNode = new UIEventNode(x, y, storyEvent);
+        return uiEventNode;
     }
 
     public static void SetupFactory() {
-        EventNode.SetSpecialValues();
+        UIEventNode.SetSpecialValues();
     }
     
 }

@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Story1234
   m_EditorClassIdentifier: 
   start: {fileID: 0}
+  allEvents:
+  - {fileID: 0}

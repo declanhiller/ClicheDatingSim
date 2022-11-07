@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,17 +8,21 @@ public class StoryEditor : EditorWindow {
 
     [SerializeField] private Story story;
 
-    private List<EventNode> allEventNodes = new List<EventNode>();
+    private List<UIEventNode> allEventNodes = new List<UIEventNode>();
     
     private Vector2 mousePos;
 
-    private EventNode hoveringOverNode;
-    
+    private UIEventNode hoveringOverNode;
+    private UIEventNode lastSelectedNode;
+
+    private StoryInspector storyInspector;
 
     [MenuItem("Window/Story Creator")]   
-    static void ShowEditor() {     
+    static StoryEditor ShowEditor() {     
         StoryEditor editor = EditorWindow.GetWindow<StoryEditor>();      
-        editor.Init();     
+        editor.Init();
+        StoryInspector.SetStyles();
+        return editor;
     }
 
     private void OnEnable() {
@@ -41,8 +46,9 @@ public class StoryEditor : EditorWindow {
             RenderConnections();
             RenderCurrentConnectionLine();
             RenderStory();
+            RenderInspector();
 
-            List<EventNode> mouseOverNodes = GetMouseOverNodes();
+            List<UIEventNode> mouseOverNodes = GetMouseOverNodes();
 
             hoveringOverNode = mouseOverNodes.Count > 0 ? mouseOverNodes[0] : null;
             
@@ -51,6 +57,15 @@ public class StoryEditor : EditorWindow {
             ProcessEventTypes();
         }
 
+    }
+
+    private void RefreshEventNodes()
+    {
+        allEventNodes.Clear();
+        foreach (StoryEvent storyEvent in story.allEvents)
+        {
+            UIEventNode uiEventNode = EventNodeFactory.createNode(200, 200, storyEvent);
+        }
     }
 
     private void RenderCurrentConnectionLine()
@@ -64,9 +79,9 @@ public class StoryEditor : EditorWindow {
 
     private void RenderConnections()
     {
-        EventNode[] copiedArray = new EventNode[story.allEvents.Count];
+        UIEventNode[] copiedArray = new UIEventNode[story.allEvents.Count];
         allEventNodes.CopyTo(copiedArray);
-        List<EventNode> copiedList = new List<EventNode>(copiedArray);
+        List<UIEventNode> copiedList = new List<UIEventNode>(copiedArray);
 
         while (copiedList.Count != 0)
         {
@@ -74,11 +89,11 @@ public class StoryEditor : EditorWindow {
         }
     }
 
-    private void RenderConnectionsRecursively(List<EventNode> copiedList, EventNode parentNode)
+    private void RenderConnectionsRecursively(List<UIEventNode> copiedList, UIEventNode parentNode)
     {
         copiedList.Remove(parentNode);
-        List<EventNode> childEventNodes = parentNode.children;
-        foreach (EventNode node in childEventNodes)
+        List<UIEventNode> childEventNodes = parentNode.children;
+        foreach (UIEventNode node in childEventNodes)
         {
             RenderNodeCurve(parentNode.rect, node.rect);
             RenderConnectionsRecursively(copiedList, node);
@@ -94,50 +109,65 @@ public class StoryEditor : EditorWindow {
                 DisplayContextMenu(current);
                 break;
             case EventType.MouseDrag:
-                DragNode(current);
+                Drag(current);
                 break;
             case EventType.MouseDown:
-                ConnectNode(current);
+                ClickNode(current);
                 break;
             
         }
     }
 
-    private void ConnectNode(Event current)
+    private void Drag(Event current)
+    {
+        if (hoveringOverNode != null)
+        {
+            DragNode(current);
+        }
+        else
+        {
+            DragOnWindow(current.delta);
+        }
+    }
+
+    private void ClickNode(Event current)
     {
         if (connectionNode != null)
         {
-            if (hoveringOverNode != null)
+            if (hoveringOverNode != null && connectionNode != hoveringOverNode)
             {
                 connectionNode.storyEvent.childEvents.Add(hoveringOverNode.storyEvent);
                 connectionNode.children.Add(hoveringOverNode);
+                hoveringOverNode.parent = connectionNode;
             }
         }
 
         connectionNode = null;
+        
+        lastSelectedNode = hoveringOverNode;
+        
+        Repaint();
     }
 
     private void RenderStory() {
         for (int i = 0; i < allEventNodes.Count; i++) {
-            EventNode storyEvent = allEventNodes[i];
-            storyEvent.Draw();
+            UIEventNode storyUIEvent = allEventNodes[i];
+            if (storyUIEvent == lastSelectedNode)
+            {
+                storyUIEvent.DrawSelected();
+            }
+            else
+            {
+                storyUIEvent.Draw();
+            }
         }
-    }
-
-    private void ClearStory() {
-        story.start = null;
-        story.allEvents.Clear();
     }
 
     void CheckSizeOfStory() {
         Debug.Log("There is " + story.allEvents.Count + " events in the story");
     }
 
-    void CheckNameOfStory() {
-        Debug.Log(story.name);
-    }
-    
-    
+
     void CreateDialogueChunk()
     {
         if (story.start == null) {
@@ -145,29 +175,30 @@ public class StoryEditor : EditorWindow {
             dialogue.eventName = "Start";
             story.start = dialogue;
             story.allEvents.Add(dialogue);
-            EventNode eventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, dialogue);
-            allEventNodes.Add(eventNode);
+            UIEventNode uiEventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, dialogue);
+            allEventNodes.Add(uiEventNode);
+            // AssetDatabase.AddObjectToAsset(dialogue, story);
         } else {
             Dialogue dialogue = new Dialogue();
             dialogue.eventName = "Dialogue";
             story.allEvents.Add(dialogue);
-            EventNode eventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, dialogue);
-            allEventNodes.Add(eventNode);
+            UIEventNode uiEventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, dialogue);
+            allEventNodes.Add(uiEventNode);
         }
-        AssetDatabase.SaveAssets();
+
     }
     
     
     private void DetectStory()
     {
-        if (Selection.activeObject is Story && EditorUtility.IsPersistent(Selection.activeObject)) {
-            story = Selection.activeObject as Story;
-            allEventNodes.Clear();
-            foreach (StoryEvent storyEvent in story.allEvents) {
-                EventNode eventNode = EventNodeFactory.createNode(200, 200, storyEvent);
-                allEventNodes.Add(eventNode);
-            }
-        }
+        // if (Selection.activeObject is Story && EditorUtility.IsPersistent(Selection.activeObject)) {
+        //     story = Selection.activeObject as Story;
+        //     allEventNodes.Clear();
+        //     foreach (StoryEvent storyEvent in story.allEvents) {
+        //         UIEventNode uiEventNode = EventNodeFactory.createNode(200, 200, storyEvent);
+        //         allEventNodes.Add(uiEventNode);
+        //     }
+        // }
     }
 
     void RenderNodeCurve(Rect start, Rect end) {
@@ -199,10 +230,10 @@ public class StoryEditor : EditorWindow {
         }
     }
 
-    private List<EventNode> GetMouseOverNodes()
+    private List<UIEventNode> GetMouseOverNodes()
     {
-        List<EventNode> hoveringOverEventNode = new List<EventNode>();
-        foreach (EventNode eventNode in allEventNodes) {
+        List<UIEventNode> hoveringOverEventNode = new List<UIEventNode>();
+        foreach (UIEventNode eventNode in allEventNodes) {
             if (eventNode.rect.Contains(mousePos)) {
                 hoveringOverEventNode.Add(eventNode);
             }
@@ -212,11 +243,11 @@ public class StoryEditor : EditorWindow {
     }
 
 
-    private EventNode rightClickedNode;
-    private void DisplaySpecialContextMenu(Event current, EventNode eventNode) {
+    private UIEventNode rightClickedNode;
+    private void DisplaySpecialContextMenu(Event current, UIEventNode uiEventNode) {
         GenericMenu menu = new GenericMenu();
 
-        rightClickedNode = eventNode;
+        rightClickedNode = uiEventNode;
             
         menu.AddItem(new GUIContent("Delete"), false, Delete);
         menu.AddItem(new GUIContent("CreateTransition"), false, CreateConnection);
@@ -226,7 +257,7 @@ public class StoryEditor : EditorWindow {
         current.Use(); 
     }
 
-    private EventNode connectionNode;
+    private UIEventNode connectionNode;
     private void CreateConnection()
     {
         connectionNode = rightClickedNode;
@@ -238,6 +269,12 @@ public class StoryEditor : EditorWindow {
             if (rightClickedNode.storyEvent == story.start)
             {
                 story.start = null;
+            }
+
+
+            if (rightClickedNode.parent != null)
+            {
+                rightClickedNode.parent.children.Remove(rightClickedNode);
             }
             story.allEvents.Remove(rightClickedNode.storyEvent);
             allEventNodes.Remove(rightClickedNode);
@@ -253,6 +290,21 @@ public class StoryEditor : EditorWindow {
             GUI.changed = true;
         }
     }
+    
+    private void DragSpecificNode(UIEventNode node, Vector2 delta)
+    {
+        node.rect.position += delta;
+    }
+    
+    private void DragOnWindow(Vector2 delta)
+    {
+        foreach (UIEventNode eventNode in allEventNodes)
+        {
+            DragSpecificNode(eventNode, delta); 
+        }
+
+        GUI.changed = true;
+    }
 
     
     
@@ -263,13 +315,62 @@ public class StoryEditor : EditorWindow {
         menu.AddItem(new GUIContent("Create/Create Choice"), false, CreateDialogueChunk);
         menu.AddItem(new GUIContent("Create/Create Minigame"), false, CreateDialogueChunk);
         menu.AddItem(new GUIContent("Check Size"), false, CheckSizeOfStory);
-        menu.AddItem(new GUIContent("Check Name"), false, CheckNameOfStory);
-        menu.AddItem(new GUIContent("Clear Story"), false, ClearStory);
-
 
         menu.ShowAsContext();
+        
  
         current.Use(); 
     }
+    
+        
+    [UnityEditor.Callbacks.OnOpenAsset(1)]
+    public static bool OpenDialogue(int assetInstanceID, int line)
+    {
+        Story story = EditorUtility.InstanceIDToObject(assetInstanceID) as Story;
 
+        if (story != null)
+        {
+            StoryEditor window = ShowEditor();
+            window.LoadNewAsset(story);
+            return true;
+        }
+        return false;
+    }
+
+    private void LoadNewAsset(Story story)
+    {
+        this.story = story;
+        
+        allEventNodes.Clear();
+
+    }
+
+    
+    private void RenderInspector()
+    {
+        if (storyInspector == null)
+        {
+            storyInspector = new StoryInspector();
+        }
+
+
+        if (lastSelectedNode != null)
+        {
+            storyInspector.Render(lastSelectedNode.storyEvent, this);
+        }
+    }
+
+    private void Save()
+    {
+        if (story.fileSavePath == null)
+        {
+            story.fileSavePath = Application.persistentDataPath + "/" + story.name + ".json";
+
+        }
+
+        string jsonString = JsonUtility.ToJson(story);
+        
+        File.WriteAllText(story.fileSavePath, jsonString);
+
+    }
 }
