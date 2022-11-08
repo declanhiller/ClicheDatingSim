@@ -8,7 +8,8 @@ using UnityEngine.UI;
 
 public class Dialogue : StoryEvent
 {
-    public Sprite character;
+    public RomanceCharacters character;
+    public Sprite characterSprite;
     public string dialogue;
     public string name;
 }

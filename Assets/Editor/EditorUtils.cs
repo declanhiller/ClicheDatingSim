@@ -34,20 +34,29 @@ public class EditorUtils {
     public static Texture2D MakeTextureForSelectedStyle(int width, int height, int border)
     {
         Texture2D t2d = new Texture2D(width, height);
-        Color color = new Color(0.5f, 0.5f, 0.5f);
-        Color selectedColor = new Color(0.8f, 0.2f, 0.2f);
+        Color color = new Color(0.6f, 0.6f, 0.6f);
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                if (x > border && x < width - border && y > border && y < height - border)
-                {
-                    t2d.SetPixel(x, y, color);
-                }
-                else
-                {
-                    t2d.SetPixel(x, y, selectedColor);
-                }
+                t2d.SetPixel(x, y, color);
+            }
+        }
+        t2d.Apply();
+        return t2d;
+    }
+
+    public static Texture2D MakeTextureForNodeTitles()
+    {
+        int width = 10;
+        int height = 10;
+        Texture2D t2d = new Texture2D(width, height);
+        Color color = new Color(0.5f, 0.5f, 0.8f);
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                t2d.SetPixel(x, y, color);
             }
         }
         t2d.Apply();
