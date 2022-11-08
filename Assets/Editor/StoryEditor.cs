@@ -54,6 +54,10 @@ public class StoryEditor : EditorWindow {
             mousePos = Event.current.mousePosition;
 
             ProcessEventTypes();
+
+            if (GUI.changed) {
+                Repaint();
+            }
         }
 
     }

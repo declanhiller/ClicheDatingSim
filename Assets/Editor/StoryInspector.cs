@@ -38,9 +38,11 @@ public class StoryInspector
         if (storyEvent is Dialogue dialogue)
         {
             RenderDialogueInspector(dialogue);
+            window.Repaint();
         }else if (storyEvent is Cutscene cutscene)
         {
             RenderCutsceneInspector(cutscene);
+            window.Repaint();
         }
         
         GUILayout.EndVertical();
@@ -69,8 +71,10 @@ public class StoryInspector
 
         GUILayout.BeginHorizontal();
 
-        EditorGUILayout.LabelField("Dialogue:", GUILayout.MinWidth(labelWidth), GUILayout.MaxWidth(labelWidth));
-        dialogue.dialogue = EditorGUILayout.TextField(dialogue.dialogue, GUILayout.MaxWidth(fieldWidth));
+        GUILayout.Label("Dialogue: ");
+        // EditorGUILayout.LabelField("Dialogue:", GUILayout.MinWidth(labelWidth), GUILayout.MaxWidth(labelWidth));
+        // dialogue.dialogue = EditorGUILayout.TextField(dialogue.dialogue, GUILayout.MaxWidth(fieldWidth));
+        dialogue.dialogue = GUILayout.TextArea(dialogue.dialogue);
         GUILayout.EndHorizontal();
         
     }
