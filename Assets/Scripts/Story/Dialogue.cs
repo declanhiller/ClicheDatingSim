@@ -10,5 +10,4 @@ public class Dialogue : StoryEvent
 {
     public RomanceCharacters character;
     public string dialogue;
-    public string name;
 }

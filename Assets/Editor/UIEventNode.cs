@@ -75,9 +75,13 @@ public class UIEventNode {
         }
     }
 
+    private const int CHARACTER_FIELD_HEIGHT = 20;
     private void DrawDialogueContent(Dialogue dialogue)
     {
-        Rect internalText = new Rect(rect.x, rect.y + TITLE_HEIGHT, rect.width, HEIGHT-TITLE_HEIGHT);
+        Rect characterText = new Rect(rect.x, rect.y + TITLE_HEIGHT, rect.width, HEIGHT-TITLE_HEIGHT);
+        GUI.Box(characterText, "Character: " + dialogue.character, CONTENT_STYLE);
+        
+        Rect internalText = new Rect(rect.x, rect.y + TITLE_HEIGHT + CHARACTER_FIELD_HEIGHT, rect.width, HEIGHT-TITLE_HEIGHT - CHARACTER_FIELD_HEIGHT);
         GUI.Box(internalText, dialogue.dialogue, CONTENT_STYLE);
     }
     

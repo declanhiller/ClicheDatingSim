@@ -55,12 +55,24 @@ public class StoryInspector
 
     private void RenderDialogueInspector(Dialogue dialogue)
     {
-        GUILayout.BeginHorizontal();
+
         float labelWidth = inspectorWidth * 0.4f;
         float fieldWidth = inspectorWidth * 0.6f;
+        
+        
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Character:", GUILayout.MinWidth(labelWidth), GUILayout.MaxWidth(labelWidth));
+        dialogue.character = (RomanceCharacters) EditorGUILayout.EnumPopup(dialogue.character, GUILayout.MaxWidth(fieldWidth));
+        GUILayout.EndHorizontal();
+        
+        GUILayout.Space(VERTICAL_SPACING);
+
+        GUILayout.BeginHorizontal();
+
         EditorGUILayout.LabelField("Dialogue:", GUILayout.MinWidth(labelWidth), GUILayout.MaxWidth(labelWidth));
         dialogue.dialogue = EditorGUILayout.TextField(dialogue.dialogue, GUILayout.MaxWidth(fieldWidth));
         GUILayout.EndHorizontal();
+        
     }
 
     public static void SetStyles()
