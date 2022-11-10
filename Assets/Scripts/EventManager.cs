@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class EventManager : MonoBehaviour {
@@ -15,11 +16,13 @@ public class EventManager : MonoBehaviour {
     [SerializeField] private GameObject dialoguePrefab;
     [SerializeField] private GameObject choicePrefab;
 
-    public GameObject DialoguePrefab => dialoguePrefab;
-
-    public GameObject ChoicePrefab => choicePrefab;
-
+    private bool animationCurrentlyPlaying = false;
+    
+    private GameObject dialogueObj;
+    
     [NonSerialized] public Keybinds keybinds;
+
+    private Coroutine ongoingAnimationCoroutine;
     
     private void Awake() {
         keybinds = new Keybinds();
@@ -27,7 +30,6 @@ public class EventManager : MonoBehaviour {
     }
 
     private void Start() {
-        TestCreation();
     }
 
     private void Update() {
@@ -35,15 +37,43 @@ public class EventManager : MonoBehaviour {
         // _currentStoryEvent = _currentStoryEvent.ChooseNextEvent();
     }
 
-    private void TestCreation() {
-        // GameObject gameObj = Instantiate(dialoguePrefab, transform);
-        // DialogueChunk dialogueChunk = gameObj.GetComponent<DialogueChunk>();
-        // currentEvent = dialogueChunk;
-        // dialogueChunk.dialogue.Add("Hello, Stranger");
-        // dialogueChunk.dialogue.Add("Do you want to continue");
-        // dialogueChunk.choices.Add("Yes!!!!");
-        // dialogueChunk.choices.Add("No :(");
-        // dialogueChunk.choices.Add("Maybe...");
+    public bool CreateDialogue(Dialogue dialogue) {
+        if (animationCurrentlyPlaying) {
+            EndDialogueAnimationEarly();
+            animationCurrentlyPlaying = false;
+            return false;
+        }
+        
+        if (dialogueObj == null) {
+            dialogueObj = Instantiate(dialoguePrefab, transform);
+        }
+
+        ongoingAnimationCoroutine = StartCoroutine(DialogueAnimation(dialogue));
+        return true;
     }
-    
+
+    private string fullDialogue;
+    [SerializeField] private float speed = 0.02f;
+    private IEnumerator DialogueAnimation(Dialogue dialogue) {
+        int index = 0;
+        animationCurrentlyPlaying = true;
+        fullDialogue = dialogue.dialogue;
+        TextMeshProUGUI tmp = dialogueObj.GetComponentInChildren<TextMeshProUGUI>();
+
+        while (index < dialogue.dialogue.Length) {
+            tmp.text = dialogue.dialogue.Substring(0, index + 1);
+            index++;
+            yield return new WaitForSeconds(speed);
+        }
+
+        animationCurrentlyPlaying = false;
+    }
+
+    private void EndDialogueAnimationEarly() {
+        StopCoroutine(ongoingAnimationCoroutine);
+        ongoingAnimationCoroutine = null;
+        TextMeshProUGUI tmp = dialogueObj.GetComponentInChildren<TextMeshProUGUI>();
+        tmp.text = fullDialogue;
+        animationCurrentlyPlaying = false;
+    }
 }

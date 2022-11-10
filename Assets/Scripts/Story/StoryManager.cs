@@ -2,11 +2,54 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-[System.Serializable]
 public class StoryManager : MonoBehaviour {
     public Story story;
+    public StoryEvent currentEvent;
     [SerializeField] private string managerName;
+
+    private Keybinds keybinds;
+
+    [SerializeField] private EventManager eventManager;
+    
+
+
+    private void Start() {
+        LoadSave();
+        keybinds = new Keybinds();
+        keybinds.Enable();
+        keybinds.Player.Click.started += ClickUpdate;
+        currentEvent = story.start;
+        eventManager.CreateDialogue(currentEvent as Dialogue);
+    }
+
+    private bool currentlyPlayingAnimation = false;
+    private void ClickUpdate(InputAction.CallbackContext context) {
+        if (currentlyPlayingAnimation) {
+            //end animation
+            return;
+        }
+
+        if (currentEvent.childEvents.Count <= 0) {
+            return;
+        }
+
+        if (currentEvent.childEvents[0].GetType() == typeof(Dialogue)) {
+            //return bool of whether event was actually created or not... OR QUEUE EVENT... wait prob not cuz the queue could only be one long lmao
+            bool ran = eventManager.CreateDialogue(currentEvent.childEvents[0] as Dialogue);
+            if (ran) {
+                currentEvent = currentEvent.childEvents[0];
+            }
+        } else if (currentEvent.childEvents[0].GetType() == typeof(Cutscene)) {
+            
+        }
+        
+        //attach a listener when giving the event to the event manager to listen to what option was clicked
+        
+        
+    }
+    
 
     public void Save(List<Vector2> positions) {
         
@@ -28,6 +71,11 @@ public class StoryManager : MonoBehaviour {
         for (int id = 0; id < story.allEvents.Count; id++)
         {
             StoryEvent storyEvent = story.allEvents[id];
+            
+            if (storyEvent == story.start) {
+                savableStory.startId = id;
+            }
+            
             if (storyEvent is Dialogue dialogue)
             {
                 SavableDialogue savableDialogue = new SavableDialogue(dialogue);
@@ -105,6 +153,8 @@ public class StoryManager : MonoBehaviour {
                 storyEvent.childEvents.Add(tracker[id]);
             }
         }
+
+        story.start = tracker[savableStory.startId];
 
 
         return positions;

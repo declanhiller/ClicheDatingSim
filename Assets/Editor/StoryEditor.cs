@@ -329,11 +329,16 @@ public class StoryEditor : EditorWindow {
         rightClickedNode = uiEventNode;
             
         menu.AddItem(new GUIContent("Delete"), false, Delete);
-        menu.AddItem(new GUIContent("CreateTransition"), false, CreateConnection);
+        menu.AddItem(new GUIContent("Create Transition"), false, CreateConnection);
+        menu.AddItem(new GUIContent("Mark as Start"), false, MarkStoryAsStart);
         
         menu.ShowAsContext();
  
         current.Use(); 
+    }
+    
+    void MarkStoryAsStart() {
+        story.start = rightClickedNode.storyEvent;
     }
     
     private void Drag(Event current)
