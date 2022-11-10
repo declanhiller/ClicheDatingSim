@@ -3,24 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+[System.Serializable]
 public class StoryManager : MonoBehaviour {
     public Story story;
-    public string managerName;
-    public string fileSavePath;
-    
-    
-    
+    [SerializeField] private string managerName;
+
     public void Save(List<Vector2> positions) {
         
-        if (fileSavePath == null)
-        {
-            fileSavePath = Application.persistentDataPath + "/" + managerName + ".json";
-        }
+        string fileSavePath = GetFilePath();
+
 
         SavableStory savableStory = InitSavableStory(positions);
 
         string jsonString = JsonUtility.ToJson(savableStory);
-        
+
         File.WriteAllText(fileSavePath, jsonString);
     }
 
@@ -61,7 +57,21 @@ public class StoryManager : MonoBehaviour {
     public List<Vector2> LoadSave() {
         // using StreamReader reader = new StreamReader(fileSavePath);
         // string json = reader.ReadToEnd();
-        string json = File.ReadAllText(fileSavePath);
+
+        if (!File.Exists(GetFilePath())) {
+            story = new Story();
+            FileStream fileStream = File.Create(GetFilePath());
+            fileStream.Close();
+            return new List<Vector2>();
+        }
+        
+        string json = File.ReadAllText(GetFilePath());
+
+        if (string.IsNullOrEmpty(json)) {
+            story = new Story();
+            return new List<Vector2>();
+        }
+        
 
         SavableStory savableStory = JsonUtility.FromJson<SavableStory>(json);
 
@@ -99,5 +109,10 @@ public class StoryManager : MonoBehaviour {
 
         return positions;
 
+    }
+
+    private string GetFilePath() {
+        string fileSavePath = Application.persistentDataPath + "/" + managerName + ".json";
+        return fileSavePath;
     }
 }

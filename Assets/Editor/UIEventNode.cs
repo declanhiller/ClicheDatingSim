@@ -52,8 +52,8 @@ public class UIEventNode
             rect = new Rect(x, y, WIDTH, HEIGHT);
         }
 
-        protected void DrawTitle(string text)
-        {
+        protected void DrawTitle() {
+            string text = storyEvent.GetType().ToString();
             Rect title = new Rect(rect.x, rect.y, rect.width, TITLE_HEIGHT);
             GUI.Label(title, text, TITLE_BOX_STYLE);
         }
@@ -61,14 +61,14 @@ public class UIEventNode
         public void Draw()
         {
             GUI.Box(rect, "", BOX_STYLE);
-            DrawTitle(storyEvent.eventName);
+            DrawTitle();
             DrawContent();
         }
 
         public void DrawSelected()
         {
             GUI.Box(rect, "", SELECTED_BOX_STYLE);
-            DrawTitle(storyEvent.eventName);
+            DrawTitle();
             DrawContent();
         }
 
