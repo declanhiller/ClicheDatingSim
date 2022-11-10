@@ -44,6 +44,8 @@ public class StoryEditor : EditorWindow {
     private void OnFocus() {
         ChangeStoryManager();
     }
+    
+
 
     public void Init() {
         EventNodeFactory.SetupFactory();
@@ -54,10 +56,12 @@ public class StoryEditor : EditorWindow {
 
         if (story != null)
         {
+            
             RenderConnections();
             RenderCurrentConnectionLine();
             RenderStory();
             RenderInspector();
+            RenderTitleBar();
 
             List<UIEventNode> mouseOverNodes = GetMouseOverNodes();
 
@@ -73,7 +77,26 @@ public class StoryEditor : EditorWindow {
         }
 
     }
-    
+
+    private void RenderTitleBar()
+    {
+        GUILayout.BeginHorizontal(EditorStyles.toolbar);
+        if (GUILayout.Button("Save", EditorStyles.toolbarButton))
+        {
+            if (storyManager != null)
+            {
+                List<Vector2> positions = new List<Vector2>();
+                foreach (UIEventNode node in allEventNodes)
+                {
+                    Vector2 pos = new Vector2(node.rect.center.x, node.rect.center.y);
+                    positions.Add(pos);
+                }
+                storyManager.Save(positions);
+            }
+        }
+        GUILayout.EndHorizontal();
+    }
+
     private void RenderInspector()
     {
         if (storyInspector == null)
@@ -154,26 +177,10 @@ public class StoryEditor : EditorWindow {
         }
     }
 
-    private void RefreshIDs() {
-        int idCounter = 0;
-        foreach (StoryEvent storyEvent in story.allEvents) {
-            storyEvent.id = idCounter;
-            idCounter++;
-        }
 
-        foreach (StoryEvent storyEvent in story.allEvents) {
-            storyEvent.childrenID.Clear();
-            foreach (StoryEvent child in storyEvent.childEvents) {
-                storyEvent.childrenID.Add(child.id);
-            }
-        }
-    }
-    
-    
     private void ChangeStoryManager() {
         Transform selectedAsset = Selection.activeTransform;
         if (selectedAsset == null) {
-            //save game
             allEventNodes.Clear();
             storyManager = null;
             story = null;
@@ -217,7 +224,6 @@ public class StoryEditor : EditorWindow {
             allEventNodes.Remove(rightClickedNode);
             rightClickedNode = null;
         }
-        RefreshIDs();
     }
 
     [UnityEditor.Callbacks.OnOpenAsset(1)]
@@ -239,7 +245,32 @@ public class StoryEditor : EditorWindow {
         allEventNodes.Clear();
         
         storyManager = manager;
+        List<Vector2> positions = storyManager.LoadSave();
         story = manager.story;
+
+
+        for (int i = 0; i < story.allEvents.Count; i++)
+        {
+            Vector2 position = positions[i];
+            StoryEvent storyEvent = story.allEvents[i];
+            UIEventNode uiEventNode = EventNodeFactory.createNode(position.x, position.y, storyEvent);
+            allEventNodes.Add(uiEventNode);
+        }
+
+        for (int i = 0; i < allEventNodes.Count; i++)
+        {
+            UIEventNode node = allEventNodes[i];
+            StoryEvent storyEvent = node.storyEvent;
+            foreach(StoryEvent child in storyEvent.childEvents)
+            {
+                UIEventNode childNode = allEventNodes.Find((a) => a.storyEvent == child);
+                node.children.Add(childNode);
+                childNode.parent = node;
+            }
+        }
+        
+        Repaint();
+        
         
 #if UNITY_EDITOR
         UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());

@@ -27,7 +27,7 @@ public class StoryInspector
             SetStyles();
         }
 
-        rect = new Rect(window.position.width - inspectorWidth, 0, inspectorWidth, window.position.height);
+        rect = new Rect(window.position.width - inspectorWidth, 20, inspectorWidth, window.position.height);
         GUILayout.BeginArea(rect, INSPECTOR_STYLE);
         GUILayout.BeginVertical();
         
@@ -60,7 +60,6 @@ public class StoryInspector
 
         float labelWidth = inspectorWidth * 0.4f;
         float fieldWidth = inspectorWidth * 0.6f;
-        
         
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Character:", GUILayout.MinWidth(labelWidth), GUILayout.MaxWidth(labelWidth));

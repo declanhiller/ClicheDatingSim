@@ -6,8 +6,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+[System.Serializable]
 public class Dialogue : StoryEvent
 {
     public RomanceCharacters character;
     public string dialogue;
+    
 }
