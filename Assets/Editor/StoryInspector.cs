@@ -65,6 +65,7 @@ public class StoryInspector
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Background:", GUILayout.MinWidth(labelWidth), GUILayout.MaxWidth(labelWidth));
         cutscene.image = (Texture2D) EditorGUILayout.ObjectField(cutscene.image, typeof(Texture2D), false, GUILayout.MaxWidth(fieldWidth));
+        string assetPath = AssetDatabase.GetAssetPath(cutscene.image); //load asset path into json instead of bytes lmao
         EditorGUILayout.EndHorizontal();
     }
 
