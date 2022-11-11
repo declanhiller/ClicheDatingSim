@@ -98,7 +98,15 @@ public class UIEventNode
 
         private void DrawCutsceneContent(Cutscene cutscene)
         {
-            throw new System.NotImplementedException();
+            Rect cutsceneNameBox = new Rect(rect.x, rect.y + TITLE_HEIGHT, rect.width, HEIGHT - TITLE_HEIGHT);
+            GUI.Box(cutsceneNameBox, "Cutscene Name: " + cutscene.cutsceneName, CONTENT_STYLE);
+
+            if (cutscene.image != null) {
+                Rect imageNameTextBox = new Rect(rect.x, rect.y + TITLE_HEIGHT + CHARACTER_FIELD_HEIGHT, rect.width,
+                    HEIGHT - TITLE_HEIGHT - CHARACTER_FIELD_HEIGHT);
+                GUI.Box(imageNameTextBox, cutscene.image.name, CONTENT_STYLE);
+            }
+
         }
 
 

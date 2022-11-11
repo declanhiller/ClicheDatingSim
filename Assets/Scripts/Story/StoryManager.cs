@@ -68,6 +68,7 @@ public class StoryManager : MonoBehaviour {
         SavableStory savableStory = new SavableStory();
         
         List<SavableDialogue> savableDialogueBoxes = new List<SavableDialogue>();
+        List<SavableCutscene> savableCutsceneBoxes = new List<SavableCutscene>();
         for (int id = 0; id < story.allEvents.Count; id++)
         {
             StoryEvent storyEvent = story.allEvents[id];
@@ -75,29 +76,46 @@ public class StoryManager : MonoBehaviour {
             if (storyEvent == story.start) {
                 savableStory.startId = id;
             }
+
+            SavableEvent savableEvent = null;
             
             if (storyEvent is Dialogue dialogue)
             {
                 SavableDialogue savableDialogue = new SavableDialogue(dialogue);
                 savableDialogueBoxes.Add(savableDialogue);
-                savableDialogue.id = id;
-                savableDialogue.children = new int[dialogue.childEvents.Count];
+
+                savableEvent = savableDialogue;
+
+            } else if (storyEvent is Cutscene cutscene) {
+                SavableCutscene savableCutscene = new SavableCutscene(cutscene);
+                savableCutsceneBoxes.Add(savableCutscene);
+                savableEvent = savableCutscene;
+            }
+
+            if (savableEvent == null) {
+                throw new Exception("Story Event was of unsavable type " + storyEvent.GetType());
+            }
+            
+            //global fields for all story events
+            savableEvent.id = id;
+            savableEvent.children = new int[storyEvent.childEvents.Count];
                 
-                savableDialogue.posX = positions[id].x;
-                savableDialogue.posY = positions[id].y;
+            savableEvent.posX = positions[id].x;
+            savableEvent.posY = positions[id].y;
                 
-                for (int i = 0; i < dialogue.childEvents.Count; i++)
-                {
-                    StoryEvent childEvent = dialogue.childEvents[i];
-                    int childID = story.allEvents.FindIndex((a) => a == childEvent);
-                    savableDialogue.children[i] = childID;
-                }
-                
+            for (int i = 0; i < storyEvent.childEvents.Count; i++)
+            {
+                StoryEvent childEvent = storyEvent.childEvents[i];
+                int childID = story.allEvents.FindIndex((a) => a == childEvent);
+                savableEvent.children[i] = childID;
             }
         }
         
         savableStory.dialogueBoxes = new SavableDialogue[savableDialogueBoxes.Count];
         savableDialogueBoxes.CopyTo(savableStory.dialogueBoxes);
+
+        savableStory.cutsceneBoxes = new SavableCutscene[savableCutsceneBoxes.Count];
+        savableCutsceneBoxes.CopyTo(savableStory.cutsceneBoxes);
 
         return savableStory;
     }
@@ -122,27 +140,49 @@ public class StoryManager : MonoBehaviour {
         
 
         SavableStory savableStory = JsonUtility.FromJson<SavableStory>(json);
-
+        
         List<Vector2> positions = new List<Vector2>();
 
-        
+
         Dictionary<int, StoryEvent> tracker = new Dictionary<int, StoryEvent>();
         Dictionary<int, SavableEvent> savableTracker = new Dictionary<int, SavableEvent>();
 
         story = new Story();
 
-        foreach (SavableDialogue savableDialogue in savableStory.dialogueBoxes)
-        {
-            Dialogue dialogue = new Dialogue();
-            dialogue.character = (RomanceCharacters) savableDialogue.character;
-            dialogue.dialogue = savableDialogue.dialogue;
+        if (savableStory.dialogueBoxes != null) {
+            foreach (SavableDialogue savableDialogue in savableStory.dialogueBoxes)
+            {
+                Dialogue dialogue = new Dialogue();
+                dialogue.character = (RomanceCharacters) savableDialogue.character;
+                dialogue.dialogue = savableDialogue.dialogue;
             
-            story.allEvents.Add(dialogue);
-            positions.Add(new Vector2(savableDialogue.posX, savableDialogue.posY));
+                story.allEvents.Add(dialogue);
+                positions.Add(new Vector2(savableDialogue.posX, savableDialogue.posY));
             
-            tracker.Add(savableDialogue.id, dialogue);
-            savableTracker.Add(savableDialogue.id, savableDialogue);
+                tracker.Add(savableDialogue.id, dialogue);
+                savableTracker.Add(savableDialogue.id, savableDialogue);
+            }
         }
+
+        if (savableStory.cutsceneBoxes != null) {
+            foreach (SavableCutscene savableCutscene in savableStory.cutsceneBoxes) {
+                Cutscene cutscene = new Cutscene();
+                cutscene.cutsceneName = savableCutscene.cutsceneName;
+
+                TextureFormat textureFormat = (TextureFormat) savableCutscene.textureFormat;
+
+                cutscene.image = new Texture2D(savableCutscene.width, savableCutscene.height, textureFormat, false);
+                
+                cutscene.image.LoadRawTextureData(savableCutscene.texBytes);
+            
+                story.allEvents.Add(cutscene);
+                positions.Add(new Vector2(savableCutscene.posX, savableCutscene.posY));
+                tracker.Add(savableCutscene.id, cutscene);
+                savableTracker.Add(savableCutscene.id, savableCutscene);
+            
+            }
+        }
+
 
 
         for (int i = 0; i < story.allEvents.Count; i++)

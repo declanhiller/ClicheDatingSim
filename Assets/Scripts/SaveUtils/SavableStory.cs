@@ -3,6 +3,6 @@ public class SavableStory
 {
     public string name;
     public SavableDialogue[] dialogueBoxes;
-    // public Cutscene[] cutsceneBoxes;
+    public SavableCutscene[] cutsceneBoxes;
     public int startId;
 }

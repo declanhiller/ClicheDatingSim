@@ -42,9 +42,42 @@ public class StoryEditor : EditorWindow {
     }
 
     private void OnFocus() {
-        ChangeStoryManager();
+        Transform activeObj = Selection.activeTransform;
+        if (activeObj != null) {
+            if (activeObj.GetComponent<StoryManager>() != null) {
+                if (activeObj.GetComponent<StoryManager>() != storyManager) {
+                    LoadNewAsset(currentAsset.GetComponent<StoryManager>());
+                }
+            }
+        }
     }
-    
+
+    private void OnLostFocus() {
+        
+        // bool keepStory = focusedWindow != null && focusedWindow.titleContent.text.Equals("StoryEditor");
+        //
+        // if (story != null && !keepStory) {
+        //     List<Vector2> positions = new List<Vector2>();
+        //     foreach (UIEventNode node in allEventNodes)
+        //     {
+        //         Vector2 pos = new Vector2(node.rect.center.x, node.rect.center.y);
+        //         positions.Add(pos);
+        //     }
+        //     storyManager.Save(positions);
+        // }
+    }
+
+    private void OnDestroy() {
+        if (story != null) {
+            List<Vector2> positions = new List<Vector2>();
+            foreach (UIEventNode node in allEventNodes)
+            {
+                Vector2 pos = new Vector2(node.rect.center.x, node.rect.center.y);
+                positions.Add(pos);
+            }
+            storyManager.Save(positions);
+        }
+    }
 
 
     public void Init() {
@@ -162,7 +195,6 @@ public class StoryEditor : EditorWindow {
     {
         if (story.start == null) {
             Dialogue dialogue = new Dialogue();
-            dialogue.eventName = "Start";
             story.start = dialogue;
             story.allEvents.Add(dialogue);
             UIEventNode uiEventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, dialogue);
@@ -170,11 +202,21 @@ public class StoryEditor : EditorWindow {
             // AssetDatabase.AddObjectToAsset(dialogue, story);
         } else {
             Dialogue dialogue = new Dialogue();
-            dialogue.eventName = "Dialogue";
             story.allEvents.Add(dialogue);
             UIEventNode uiEventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, dialogue);
             allEventNodes.Add(uiEventNode);
         }
+    }
+
+    void CreateCutscene() {
+        Cutscene cutscene = new Cutscene();
+        story.allEvents.Add(cutscene);
+        UIEventNode uiEventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, cutscene);
+        allEventNodes.Add(uiEventNode);
+        if (story.start == null) {
+            story.start = cutscene;
+        }
+
     }
 
 
@@ -313,7 +355,7 @@ public class StoryEditor : EditorWindow {
         GenericMenu menu = new GenericMenu();
             
         menu.AddItem(new GUIContent("Create/Create Dialogue"), false, CreateDialogueChunk);
-        menu.AddItem(new GUIContent("Create/Create Choice"), false, CreateDialogueChunk);
+        menu.AddItem(new GUIContent("Create/Create Cutscene"), false, CreateCutscene);
         menu.AddItem(new GUIContent("Create/Create Minigame"), false, CreateDialogueChunk);
         menu.AddItem(new GUIContent("Check Size"), false, CheckSizeOfStory);
 

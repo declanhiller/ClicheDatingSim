@@ -31,7 +31,7 @@ public class StoryInspector
         GUILayout.BeginArea(rect, INSPECTOR_STYLE);
         GUILayout.BeginVertical();
         
-        GUILayout.Label(storyEvent.eventName, INSPECTOR_TITLE_STYLE);
+        GUILayout.Label(storyEvent.GetType().ToString(), INSPECTOR_TITLE_STYLE);
 
         GUILayout.Space(VERTICAL_SPACING);
 
@@ -52,7 +52,20 @@ public class StoryInspector
 
     private void RenderCutsceneInspector(Cutscene cutscene)
     {
+        float labelWidth = inspectorWidth * 0.4f;
+        float fieldWidth = inspectorWidth * 0.6f;
         
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Cutscene Name: ");
+        cutscene.cutsceneName = GUILayout.TextArea(cutscene.cutsceneName);
+        GUILayout.EndHorizontal();
+        
+        GUILayout.Space(VERTICAL_SPACING);
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Background:", GUILayout.MinWidth(labelWidth), GUILayout.MaxWidth(labelWidth));
+        cutscene.image = (Texture2D) EditorGUILayout.ObjectField(cutscene.image, typeof(Texture2D), false, GUILayout.MaxWidth(fieldWidth));
+        EditorGUILayout.EndHorizontal();
     }
 
     private void RenderDialogueInspector(Dialogue dialogue)
