@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -169,12 +170,8 @@ public class StoryManager : MonoBehaviour {
                 Cutscene cutscene = new Cutscene();
                 cutscene.cutsceneName = savableCutscene.cutsceneName;
 
-                TextureFormat textureFormat = (TextureFormat) savableCutscene.textureFormat;
+                cutscene.image = AssetDatabase.LoadAssetAtPath<Texture2D>(savableCutscene.path);
 
-                cutscene.image = new Texture2D(savableCutscene.width, savableCutscene.height, textureFormat, false);
-                
-                cutscene.image.LoadRawTextureData(savableCutscene.texBytes);
-            
                 story.allEvents.Add(cutscene);
                 positions.Add(new Vector2(savableCutscene.posX, savableCutscene.posY));
                 tracker.Add(savableCutscene.id, cutscene);
