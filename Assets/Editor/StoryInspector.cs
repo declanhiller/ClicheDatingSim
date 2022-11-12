@@ -46,11 +46,20 @@ public class StoryInspector
         } else if (storyEvent is SceneStart sceneStart) {
             RenderSceneStartInspector(sceneStart);
             window.Repaint();
+        } else if (storyEvent is Option option) {
+            RenderOptionInspector(option);
         }
         
         GUILayout.EndVertical();
         GUILayout.EndArea();
 
+    }
+    
+    private void RenderOptionInspector(Option option) {
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Choice: ");
+        option.option = GUILayout.TextArea(option.option);
+        GUILayout.EndHorizontal();
     }
 
     private void RenderSceneStartInspector(SceneStart sceneStart) {

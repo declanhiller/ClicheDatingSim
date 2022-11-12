@@ -12,6 +12,7 @@ public class UIEventNode
         public static GUIStyle DIALOGUE_BOX_STYLE = new();
         public static GUIStyle CUTSCENE_BOX_STYLE = new();
         public static GUIStyle SCENE_START_BOX_STYLE = new();
+        public static GUIStyle OPTION_BOX_STYLE = new();
         public static GUIStyle SELECTED_BOX_STYLE = new();
         public static GUIStyle CONTENT_STYLE = new();
 
@@ -42,10 +43,12 @@ public class UIEventNode
             DIALOGUE_BOX_STYLE.alignment = TextAnchor.MiddleCenter;
             CUTSCENE_BOX_STYLE.alignment = TextAnchor.MiddleCenter;
             SCENE_START_BOX_STYLE.alignment = TextAnchor.MiddleCenter;
+            OPTION_BOX_STYLE.alignment = TextAnchor.MiddleCenter;
 
             DIALOGUE_BOX_STYLE.normal.background = EditorUtils.MakeTextureForNodeTitles(new Color(0.5f, 0.5f, 0.8f));
             CUTSCENE_BOX_STYLE.normal.background = EditorUtils.MakeTextureForNodeTitles(new Color(0.8f, 0.5f, 0.5f));
             SCENE_START_BOX_STYLE.normal.background = EditorUtils.MakeTextureForNodeTitles(new Color(0.5f, 0.8f, 0.5f));
+            OPTION_BOX_STYLE.normal.background = EditorUtils.MakeTextureForNodeTitles(new Color(0.5f, 0.8f, 0.8f));
             
             
             //selected style
@@ -72,7 +75,11 @@ public class UIEventNode
                 style = CUTSCENE_BOX_STYLE;
             } else if (storyEvent is SceneStart) {
                 style = SCENE_START_BOX_STYLE;
+            } else if (storyEvent is Option) {
+                style = OPTION_BOX_STYLE;
             }
+            
+            
             GUI.Label(title, text, style);
         }
 
@@ -101,6 +108,8 @@ public class UIEventNode
                 DrawCutsceneContent(cutscene);
             } else if (storyEvent is SceneStart sceneStart) {
                 DrawSceneStartContent(sceneStart);
+            } else if (storyEvent is Option option) {
+                DrawOptionContent(option);
             }
         }
 
@@ -139,6 +148,10 @@ public class UIEventNode
                 GUI.Box(imageNameTextBox, sceneStart.background.name, CONTENT_STYLE);
             }
         }
-
-
+        
+        private void DrawOptionContent(Option option) {
+            Rect cutsceneNameBox = new Rect(rect.x, rect.y + TITLE_HEIGHT, rect.width, HEIGHT - TITLE_HEIGHT);
+            GUI.Box(cutsceneNameBox, "Choice: " + option.option, CONTENT_STYLE);
+        }
+        
     }

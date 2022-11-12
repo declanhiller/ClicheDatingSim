@@ -71,6 +71,10 @@ public class StoryManager : MonoBehaviour {
         List<SavableDialogue> savableDialogueBoxes = new List<SavableDialogue>();
         List<SavableCutscene> savableCutsceneBoxes = new List<SavableCutscene>();
         List<SavableSceneStart> savableSceneStartBoxes = new List<SavableSceneStart>();
+        List<SavableOption> savableOptionBoxes = new List<SavableOption>();
+
+        savableStory.startId = -1;
+        
         for (int id = 0; id < story.allEvents.Count; id++)
         {
             StoryEvent storyEvent = story.allEvents[id];
@@ -96,6 +100,10 @@ public class StoryManager : MonoBehaviour {
                 SavableSceneStart savableSceneStart = new SavableSceneStart(sceneStart);
                 savableSceneStartBoxes.Add(savableSceneStart);
                 savableEvent = savableSceneStart;
+            } else if (storyEvent is Option option) {
+                SavableOption savableOption = new SavableOption(option);
+                savableOptionBoxes.Add(savableOption);
+                savableEvent = savableOption;
             }
 
             if (savableEvent == null) {
@@ -125,6 +133,9 @@ public class StoryManager : MonoBehaviour {
 
         savableStory.sceneStartBoxes = new SavableSceneStart[savableSceneStartBoxes.Count];
         savableSceneStartBoxes.CopyTo(savableStory.sceneStartBoxes);
+
+        savableStory.optionBoxes = new SavableOption[savableOptionBoxes.Count];
+        savableOptionBoxes.CopyTo(savableStory.optionBoxes);
 
         return savableStory;
     }
@@ -157,7 +168,7 @@ public class StoryManager : MonoBehaviour {
         Dictionary<int, SavableEvent> savableTracker = new Dictionary<int, SavableEvent>();
 
         story = new Story();
-
+        
         if (savableStory.dialogueBoxes != null) {
             foreach (SavableDialogue savableDialogue in savableStory.dialogueBoxes)
             {
@@ -200,6 +211,18 @@ public class StoryManager : MonoBehaviour {
                 savableTracker.Add(savableSceneStart.id, savableSceneStart);
             }
         }
+        
+        if (savableStory.optionBoxes != null) {
+            foreach (SavableOption savableOption in savableStory.optionBoxes) {
+                Option option = new Option();
+                option.option = savableOption.optionStr;
+                
+                story.allEvents.Add(option);
+                positions.Add(new Vector2(savableOption.posX, savableOption.posY));
+                tracker.Add(savableOption.id, option);
+                savableTracker.Add(savableOption.id, savableOption);
+            }
+        }
 
 
 
@@ -212,7 +235,9 @@ public class StoryManager : MonoBehaviour {
             }
         }
 
-        story.start = tracker[savableStory.startId];
+        if (savableStory.startId != -1) {
+            story.start = tracker[savableStory.startId];
+        }
 
 
         return positions;

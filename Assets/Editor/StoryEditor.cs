@@ -224,6 +224,13 @@ public class StoryEditor : EditorWindow {
         allEventNodes.Add(uiEventNode);
         story.start ??= sceneStart;
     }
+    
+    void CreateOption() {
+        Option option = new Option();
+        story.allEvents.Add(option);
+        UIEventNode uiEventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, option);
+        allEventNodes.Add(uiEventNode);
+    }
 
 
     private void ChangeStoryManager() {
@@ -363,6 +370,7 @@ public class StoryEditor : EditorWindow {
         menu.AddItem(new GUIContent("Create/Create Dialogue"), false, CreateDialogueChunk);
         menu.AddItem(new GUIContent("Create/Create Cutscene"), false, CreateCutscene);
         menu.AddItem(new GUIContent("Create/Create Scene Start"), false, CreateSceneStart);
+        menu.AddItem(new GUIContent("Create/Create Option"), false, CreateOption);
         menu.AddItem(new GUIContent("Check Size"), false, CheckSizeOfStory);
 
         menu.ShowAsContext();

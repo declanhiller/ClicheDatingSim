@@ -5,5 +5,6 @@ public class SavableStory
     public SavableDialogue[] dialogueBoxes;
     public SavableCutscene[] cutsceneBoxes;
     public SavableSceneStart[] sceneStartBoxes;
+    public SavableOption[] optionBoxes;
     public int startId;
 }
