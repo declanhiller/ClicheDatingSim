@@ -9,7 +9,9 @@ public class UIEventNode
 
         public Rect rect;
         public static GUIStyle BOX_STYLE = new();
-        public static GUIStyle TITLE_BOX_STYLE = new();
+        public static GUIStyle DIALOGUE_BOX_STYLE = new();
+        public static GUIStyle CUTSCENE_BOX_STYLE = new();
+        public static GUIStyle SCENE_START_BOX_STYLE = new();
         public static GUIStyle SELECTED_BOX_STYLE = new();
         public static GUIStyle CONTENT_STYLE = new();
 
@@ -36,8 +38,16 @@ public class UIEventNode
             //default style
             BOX_STYLE.normal.background = EditorUtils.MakeTextureForNode(WIDTH, HEIGHT);
             //title style
-            TITLE_BOX_STYLE.alignment = TextAnchor.MiddleCenter;
-            TITLE_BOX_STYLE.normal.background = EditorUtils.MakeTextureForNodeTitles();
+
+            DIALOGUE_BOX_STYLE.alignment = TextAnchor.MiddleCenter;
+            CUTSCENE_BOX_STYLE.alignment = TextAnchor.MiddleCenter;
+            SCENE_START_BOX_STYLE.alignment = TextAnchor.MiddleCenter;
+
+            DIALOGUE_BOX_STYLE.normal.background = EditorUtils.MakeTextureForNodeTitles(new Color(0.5f, 0.5f, 0.8f));
+            CUTSCENE_BOX_STYLE.normal.background = EditorUtils.MakeTextureForNodeTitles(new Color(0.8f, 0.5f, 0.5f));
+            SCENE_START_BOX_STYLE.normal.background = EditorUtils.MakeTextureForNodeTitles(new Color(0.5f, 0.8f, 0.5f));
+            
+            
             //selected style
             SELECTED_BOX_STYLE.normal.background =
                 EditorUtils.MakeTextureForSelectedStyle(WIDTH, HEIGHT, SELECTED_BORDER_SIZE);
@@ -55,7 +65,15 @@ public class UIEventNode
         protected void DrawTitle() {
             string text = storyEvent.GetType().ToString();
             Rect title = new Rect(rect.x, rect.y, rect.width, TITLE_HEIGHT);
-            GUI.Label(title, text, TITLE_BOX_STYLE);
+            GUIStyle style = null;
+            if (storyEvent is Dialogue) {
+                style = DIALOGUE_BOX_STYLE;
+            } else if (storyEvent is Cutscene) {
+                style = CUTSCENE_BOX_STYLE;
+            } else if (storyEvent is SceneStart) {
+                style = SCENE_START_BOX_STYLE;
+            }
+            GUI.Label(title, text, style);
         }
 
         public void Draw()
@@ -81,6 +99,8 @@ public class UIEventNode
             else if (storyEvent is Cutscene cutscene)
             {
                 DrawCutsceneContent(cutscene);
+            } else if (storyEvent is SceneStart sceneStart) {
+                DrawSceneStartContent(sceneStart);
             }
         }
 
@@ -107,6 +127,17 @@ public class UIEventNode
                 GUI.Box(imageNameTextBox, cutscene.image.name, CONTENT_STYLE);
             }
 
+        }
+        
+        private void DrawSceneStartContent(SceneStart sceneStart) {
+            Rect cutsceneNameBox = new Rect(rect.x, rect.y + TITLE_HEIGHT, rect.width, HEIGHT - TITLE_HEIGHT);
+            GUI.Box(cutsceneNameBox, "Scene Name: " + sceneStart.sceneName, CONTENT_STYLE);
+
+            if (sceneStart.background != null) {
+                Rect imageNameTextBox = new Rect(rect.x, rect.y + TITLE_HEIGHT + CHARACTER_FIELD_HEIGHT, rect.width,
+                    HEIGHT - TITLE_HEIGHT - CHARACTER_FIELD_HEIGHT);
+                GUI.Box(imageNameTextBox, sceneStart.background.name, CONTENT_STYLE);
+            }
         }
 
 

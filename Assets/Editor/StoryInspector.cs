@@ -43,11 +43,31 @@ public class StoryInspector
         {
             RenderCutsceneInspector(cutscene);
             window.Repaint();
+        } else if (storyEvent is SceneStart sceneStart) {
+            RenderSceneStartInspector(sceneStart);
+            window.Repaint();
         }
         
         GUILayout.EndVertical();
         GUILayout.EndArea();
 
+    }
+
+    private void RenderSceneStartInspector(SceneStart sceneStart) {
+        float labelWidth = inspectorWidth * 0.4f;
+        float fieldWidth = inspectorWidth * 0.6f;
+        
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Cutscene Name: ");
+        sceneStart.sceneName = GUILayout.TextArea(sceneStart.sceneName);
+        GUILayout.EndHorizontal();
+        
+        GUILayout.Space(VERTICAL_SPACING);
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Background:", GUILayout.MinWidth(labelWidth), GUILayout.MaxWidth(labelWidth));
+        sceneStart.background = (Texture2D) EditorGUILayout.ObjectField(sceneStart.background, typeof(Texture2D), false, GUILayout.MaxWidth(fieldWidth));
+        EditorGUILayout.EndHorizontal();
     }
 
     private void RenderCutsceneInspector(Cutscene cutscene)
@@ -65,7 +85,6 @@ public class StoryInspector
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Background:", GUILayout.MinWidth(labelWidth), GUILayout.MaxWidth(labelWidth));
         cutscene.image = (Texture2D) EditorGUILayout.ObjectField(cutscene.image, typeof(Texture2D), false, GUILayout.MaxWidth(fieldWidth));
-        string assetPath = AssetDatabase.GetAssetPath(cutscene.image); //load asset path into json instead of bytes lmao
         EditorGUILayout.EndHorizontal();
     }
 
@@ -94,10 +113,7 @@ public class StoryInspector
 
     public static void SetStyles()
     {
-        if (INSPECTOR_STYLE == null)
-        {
-            INSPECTOR_STYLE = new GUIStyle();
-        }
+        INSPECTOR_STYLE = new GUIStyle();
         
         INSPECTOR_STYLE.normal.background = EditorUtils.MakeTextureForInspector();
         
@@ -106,7 +122,7 @@ public class StoryInspector
         INSPECTOR_TITLE_STYLE.normal.textColor = Color.white;
         INSPECTOR_TITLE_STYLE.fontSize = 24;
         INSPECTOR_TITLE_STYLE.wordWrap = true;
-
+        
 
         FIELD_STYLE = new GUIStyle();
         FIELD_STYLE.normal.textColor = Color.white;

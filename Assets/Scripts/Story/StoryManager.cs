@@ -70,6 +70,7 @@ public class StoryManager : MonoBehaviour {
         
         List<SavableDialogue> savableDialogueBoxes = new List<SavableDialogue>();
         List<SavableCutscene> savableCutsceneBoxes = new List<SavableCutscene>();
+        List<SavableSceneStart> savableSceneStartBoxes = new List<SavableSceneStart>();
         for (int id = 0; id < story.allEvents.Count; id++)
         {
             StoryEvent storyEvent = story.allEvents[id];
@@ -91,6 +92,10 @@ public class StoryManager : MonoBehaviour {
                 SavableCutscene savableCutscene = new SavableCutscene(cutscene);
                 savableCutsceneBoxes.Add(savableCutscene);
                 savableEvent = savableCutscene;
+            } else if (storyEvent is SceneStart sceneStart) {
+                SavableSceneStart savableSceneStart = new SavableSceneStart(sceneStart);
+                savableSceneStartBoxes.Add(savableSceneStart);
+                savableEvent = savableSceneStart;
             }
 
             if (savableEvent == null) {
@@ -117,6 +122,9 @@ public class StoryManager : MonoBehaviour {
 
         savableStory.cutsceneBoxes = new SavableCutscene[savableCutsceneBoxes.Count];
         savableCutsceneBoxes.CopyTo(savableStory.cutsceneBoxes);
+
+        savableStory.sceneStartBoxes = new SavableSceneStart[savableSceneStartBoxes.Count];
+        savableSceneStartBoxes.CopyTo(savableStory.sceneStartBoxes);
 
         return savableStory;
     }
@@ -177,6 +185,19 @@ public class StoryManager : MonoBehaviour {
                 tracker.Add(savableCutscene.id, cutscene);
                 savableTracker.Add(savableCutscene.id, savableCutscene);
             
+            }
+        }
+
+        if (savableStory.sceneStartBoxes != null) {
+            foreach (SavableSceneStart savableSceneStart in savableStory.sceneStartBoxes) {
+                SceneStart sceneStart = new SceneStart();
+                sceneStart.sceneName = savableSceneStart.sceneName;
+                sceneStart.background = AssetDatabase.LoadAssetAtPath<Texture2D>(savableSceneStart.backgroundImagePath);
+                
+                story.allEvents.Add(sceneStart);
+                positions.Add(new Vector2(savableSceneStart.posX, savableSceneStart.posY));
+                tracker.Add(savableSceneStart.id, sceneStart);
+                savableTracker.Add(savableSceneStart.id, savableSceneStart);
             }
         }
 

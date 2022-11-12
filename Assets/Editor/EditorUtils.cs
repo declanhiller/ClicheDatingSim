@@ -88,12 +88,11 @@ public class EditorUtils {
         return t2d;
     }
 
-    public static Texture2D MakeTextureForNodeTitles()
+    public static Texture2D MakeTextureForNodeTitles(Color color)
     {
         int width = 10;
         int height = 10;
         Texture2D t2d = new Texture2D(width, height);
-        Color color = new Color(0.5f, 0.5f, 0.8f);
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)

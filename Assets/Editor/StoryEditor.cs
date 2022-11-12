@@ -213,10 +213,16 @@ public class StoryEditor : EditorWindow {
         story.allEvents.Add(cutscene);
         UIEventNode uiEventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, cutscene);
         allEventNodes.Add(uiEventNode);
-        if (story.start == null) {
-            story.start = cutscene;
-        }
+        story.start ??= cutscene;
 
+    }
+
+    void CreateSceneStart() {
+        SceneStart sceneStart = new SceneStart();
+        story.allEvents.Add(sceneStart);
+        UIEventNode uiEventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, sceneStart);
+        allEventNodes.Add(uiEventNode);
+        story.start ??= sceneStart;
     }
 
 
@@ -356,7 +362,7 @@ public class StoryEditor : EditorWindow {
             
         menu.AddItem(new GUIContent("Create/Create Dialogue"), false, CreateDialogueChunk);
         menu.AddItem(new GUIContent("Create/Create Cutscene"), false, CreateCutscene);
-        menu.AddItem(new GUIContent("Create/Create Minigame"), false, CreateDialogueChunk);
+        menu.AddItem(new GUIContent("Create/Create Scene Start"), false, CreateSceneStart);
         menu.AddItem(new GUIContent("Check Size"), false, CheckSizeOfStory);
 
         menu.ShowAsContext();
