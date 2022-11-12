@@ -43,7 +43,24 @@ public class StoryManager : MonoBehaviour {
                 currentEvent = currentEvent.childEvents[0];
             }
         } else if (currentEvent.childEvents[0].GetType() == typeof(Cutscene)) {
-            
+            bool ran = eventManager.CreateCutscene(currentEvent.childEvents[0] as Cutscene);
+            if (ran) {
+                currentEvent = currentEvent.childEvents[0];
+            }
+        } else if (currentEvent.childEvents[0].GetType() == typeof(SceneStart))
+        {
+            throw new NotImplementedException();
+            // bool ran = eventManager.CreateDialogue(currentEvent.childEvents[0] as Dialogue);
+            // if (ran) {
+            //     currentEvent = currentEvent.childEvents[0];
+            // }
+        } else if (currentEvent.childEvents[0].GetType() == typeof(Option))
+        {
+            throw new NotImplementedException();
+            // bool ran = eventManager.CreateDialogue(currentEvent.childEvents[0] as Dialogue);
+            // if (ran) {
+            //     currentEvent = currentEvent.childEvents[0];
+            // }
         }
         
         //attach a listener when giving the event to the event manager to listen to what option was clicked
@@ -89,9 +106,7 @@ public class StoryManager : MonoBehaviour {
             {
                 SavableDialogue savableDialogue = new SavableDialogue(dialogue);
                 savableDialogueBoxes.Add(savableDialogue);
-
                 savableEvent = savableDialogue;
-
             } else if (storyEvent is Cutscene cutscene) {
                 SavableCutscene savableCutscene = new SavableCutscene(cutscene);
                 savableCutsceneBoxes.Add(savableCutscene);

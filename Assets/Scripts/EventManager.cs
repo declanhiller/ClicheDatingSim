@@ -23,6 +23,7 @@ public class EventManager : MonoBehaviour {
     [NonSerialized] public Keybinds keybinds;
 
     private Coroutine ongoingAnimationCoroutine;
+    private Type ongoingType;
     
     private void Awake() {
         keybinds = new Keybinds();
@@ -39,6 +40,7 @@ public class EventManager : MonoBehaviour {
 
     public bool CreateDialogue(Dialogue dialogue) {
         if (animationCurrentlyPlaying) {
+            EndAnimationEarly();
             EndDialogueAnimationEarly();
             animationCurrentlyPlaying = false;
             return false;
@@ -49,6 +51,7 @@ public class EventManager : MonoBehaviour {
         }
 
         ongoingAnimationCoroutine = StartCoroutine(DialogueAnimation(dialogue));
+        ongoingType = typeof(Dialogue);
         return true;
     }
 
@@ -75,5 +78,23 @@ public class EventManager : MonoBehaviour {
         TextMeshProUGUI tmp = dialogueObj.GetComponentInChildren<TextMeshProUGUI>();
         tmp.text = fullDialogue;
         animationCurrentlyPlaying = false;
+    }
+
+    private void EndAnimationEarly()
+    {
+        if (ongoingType == typeof(Dialogue))
+        {
+            EndDialogueAnimationEarly();
+        }
+    }
+
+    public bool CreateCutscene(Cutscene currentEventChildEvent)
+    {
+        if (animationCurrentlyPlaying)
+        {
+            
+        }
+
+        return false;
     }
 }

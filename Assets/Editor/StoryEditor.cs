@@ -33,7 +33,8 @@ public class StoryEditor : EditorWindow {
     }
 
     private void OnEnable() {
-        EventNodeFactory.SetupFactory();
+        UIEventNode.SetSpecialValues();
+        StoryEvent.Setup();
         ChangeStoryManager();
     }
 
@@ -81,7 +82,8 @@ public class StoryEditor : EditorWindow {
 
 
     public void Init() {
-        EventNodeFactory.SetupFactory();
+        UIEventNode.SetSpecialValues();
+        StoryEvent.Setup();
     }
  
     void OnGUI()
@@ -191,45 +193,35 @@ public class StoryEditor : EditorWindow {
         }
     }
     
+    
+    private void CreateChunk(StoryEvent storyEvent)
+    {
+        story.allEvents.Add(storyEvent);
+        UIEventNode uiEventNode = new UIEventNode(mousePos.x, mousePos.y, storyEvent);
+        allEventNodes.Add(uiEventNode);
+        story.start ??= storyEvent;
+    }
+    
     void CreateDialogueChunk()
     {
-        if (story.start == null) {
-            Dialogue dialogue = new Dialogue();
-            story.start = dialogue;
-            story.allEvents.Add(dialogue);
-            UIEventNode uiEventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, dialogue);
-            allEventNodes.Add(uiEventNode);
-            // AssetDatabase.AddObjectToAsset(dialogue, story);
-        } else {
-            Dialogue dialogue = new Dialogue();
-            story.allEvents.Add(dialogue);
-            UIEventNode uiEventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, dialogue);
-            allEventNodes.Add(uiEventNode);
-        }
+        Dialogue dialogue = new Dialogue();
+        CreateChunk(dialogue);
     }
-
+    
     void CreateCutscene() {
         Cutscene cutscene = new Cutscene();
-        story.allEvents.Add(cutscene);
-        UIEventNode uiEventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, cutscene);
-        allEventNodes.Add(uiEventNode);
-        story.start ??= cutscene;
+        CreateChunk(cutscene);
 
     }
 
     void CreateSceneStart() {
         SceneStart sceneStart = new SceneStart();
-        story.allEvents.Add(sceneStart);
-        UIEventNode uiEventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, sceneStart);
-        allEventNodes.Add(uiEventNode);
-        story.start ??= sceneStart;
+        CreateChunk(sceneStart);
     }
     
     void CreateOption() {
         Option option = new Option();
-        story.allEvents.Add(option);
-        UIEventNode uiEventNode = EventNodeFactory.createNode(mousePos.x, mousePos.y, option);
-        allEventNodes.Add(uiEventNode);
+        CreateChunk(option);
     }
 
 
@@ -308,7 +300,7 @@ public class StoryEditor : EditorWindow {
         {
             Vector2 position = positions[i];
             StoryEvent storyEvent = story.allEvents[i];
-            UIEventNode uiEventNode = EventNodeFactory.createNode(position.x, position.y, storyEvent);
+            UIEventNode uiEventNode = new UIEventNode(position.x, position.y, storyEvent);
             allEventNodes.Add(uiEventNode);
         }
 

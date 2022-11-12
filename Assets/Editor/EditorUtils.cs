@@ -87,20 +87,4 @@ public class EditorUtils {
         t2d.Apply();
         return t2d;
     }
-
-    public static Texture2D MakeTextureForNodeTitles(Color color)
-    {
-        int width = 10;
-        int height = 10;
-        Texture2D t2d = new Texture2D(width, height);
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                t2d.SetPixel(x, y, color);
-            }
-        }
-        t2d.Apply();
-        return t2d;
-    }
 }
