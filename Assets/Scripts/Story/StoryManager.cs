@@ -25,17 +25,11 @@ public class StoryManager : MonoBehaviour {
         eventManager.CreateDialogue(currentEvent as Dialogue);
     }
 
-    private bool currentlyPlayingAnimation = false;
     private void ClickUpdate(InputAction.CallbackContext context) {
-        if (currentlyPlayingAnimation) {
-            //end animation
-            return;
-        }
-
         if (currentEvent.childEvents.Count <= 0) {
             return;
         }
-
+        
         if (currentEvent.childEvents[0].GetType() == typeof(Dialogue)) {
             //return bool of whether event was actually created or not... OR QUEUE EVENT... wait prob not cuz the queue could only be one long lmao
             bool ran = eventManager.CreateDialogue(currentEvent.childEvents[0] as Dialogue);
@@ -43,10 +37,7 @@ public class StoryManager : MonoBehaviour {
                 currentEvent = currentEvent.childEvents[0];
             }
         } else if (currentEvent.childEvents[0].GetType() == typeof(Cutscene)) {
-            bool ran = eventManager.CreateCutscene(currentEvent.childEvents[0] as Cutscene);
-            if (ran) {
-                currentEvent = currentEvent.childEvents[0];
-            }
+            
         } else if (currentEvent.childEvents[0].GetType() == typeof(SceneStart))
         {
             throw new NotImplementedException();

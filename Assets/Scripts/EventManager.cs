@@ -8,22 +8,15 @@ public class EventManager : MonoBehaviour {
     
     
     private StoryEvent _currentStoryEvent;
-
-    [SerializeField] private Story story;
-
-    public Story Story => story;
-
+    
     [SerializeField] private GameObject dialoguePrefab;
     [SerializeField] private GameObject choicePrefab;
-
-    private bool animationCurrentlyPlaying = false;
     
-    private GameObject dialogueObj;
+    private GameObject dialogueObjPrefab;
     
     [NonSerialized] public Keybinds keybinds;
 
     private Coroutine ongoingAnimationCoroutine;
-    private Type ongoingType;
     
     private void Awake() {
         keybinds = new Keybinds();
@@ -39,19 +32,16 @@ public class EventManager : MonoBehaviour {
     }
 
     public bool CreateDialogue(Dialogue dialogue) {
-        if (animationCurrentlyPlaying) {
-            EndAnimationEarly();
-            EndDialogueAnimationEarly();
-            animationCurrentlyPlaying = false;
+        if (ongoingAnimationCoroutine != null) {
+            // EndAnimationEarly();
             return false;
         }
         
-        if (dialogueObj == null) {
-            dialogueObj = Instantiate(dialoguePrefab, transform);
+        if (dialogueObjPrefab == null) {
+            dialogueObjPrefab = Instantiate(dialoguePrefab, transform);
         }
 
         ongoingAnimationCoroutine = StartCoroutine(DialogueAnimation(dialogue));
-        ongoingType = typeof(Dialogue);
         return true;
     }
 
@@ -59,9 +49,8 @@ public class EventManager : MonoBehaviour {
     [SerializeField] private float speed = 0.02f;
     private IEnumerator DialogueAnimation(Dialogue dialogue) {
         int index = 0;
-        animationCurrentlyPlaying = true;
         fullDialogue = dialogue.dialogue;
-        TextMeshProUGUI tmp = dialogueObj.GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI tmp = dialogueObjPrefab.GetComponentInChildren<TextMeshProUGUI>();
 
         while (index < dialogue.dialogue.Length) {
             tmp.text = dialogue.dialogue.Substring(0, index + 1);
@@ -69,32 +58,13 @@ public class EventManager : MonoBehaviour {
             yield return new WaitForSeconds(speed);
         }
 
-        animationCurrentlyPlaying = false;
+        ongoingAnimationCoroutine = null;
     }
 
     private void EndDialogueAnimationEarly() {
         StopCoroutine(ongoingAnimationCoroutine);
         ongoingAnimationCoroutine = null;
-        TextMeshProUGUI tmp = dialogueObj.GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI tmp = dialogueObjPrefab.GetComponentInChildren<TextMeshProUGUI>();
         tmp.text = fullDialogue;
-        animationCurrentlyPlaying = false;
-    }
-
-    private void EndAnimationEarly()
-    {
-        if (ongoingType == typeof(Dialogue))
-        {
-            EndDialogueAnimationEarly();
-        }
-    }
-
-    public bool CreateCutscene(Cutscene currentEventChildEvent)
-    {
-        if (animationCurrentlyPlaying)
-        {
-            
-        }
-
-        return false;
     }
 }

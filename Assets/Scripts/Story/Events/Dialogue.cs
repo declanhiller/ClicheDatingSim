@@ -12,6 +12,7 @@ public class Dialogue : StoryEvent
     public RomanceCharacters character;
     public string dialogue;
     public static GUIStyle DIALOGUE_BOX_STYLE = new();
+    private Coroutine ongoingAnimation;
 
     public static void SetupDialogue()
     {
