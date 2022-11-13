@@ -301,7 +301,7 @@ GameObject:
   - component: {fileID: 664504442}
   m_Layer: 0
   m_Name: Story
-  m_TagString: Untagged
+  m_TagString: StoryManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

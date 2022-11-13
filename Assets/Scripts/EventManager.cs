@@ -3,54 +3,98 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class EventManager : MonoBehaviour {
     
     
-    private StoryEvent _currentStoryEvent;
+    private StoryManager manager;
     
     [SerializeField] private GameObject dialoguePrefab;
     [SerializeField] private GameObject choicePrefab;
     
-    private GameObject dialogueObjPrefab;
-    
+    private GameObject dialogueObj;
+    private Coroutine dialogueAnimation;
+
     [NonSerialized] public Keybinds keybinds;
 
-    private Coroutine ongoingAnimationCoroutine;
-    
-    private void Awake() {
-        keybinds = new Keybinds();
-        keybinds.Enable();
-    }
+    private bool canRun = false;
 
     private void Start() {
+        keybinds = new Keybinds();
+        keybinds.Enable();
+        keybinds.Player.Click.started += ClickUpdate;
+        manager = GameObject.FindGameObjectWithTag("StoryManager").GetComponent<StoryManager>();
+        StartDialogue(manager.currentEvent[0] as Dialogue);
     }
 
-    private void Update() {
-        // if (!_currentStoryEvent.GoToNextEvent()) return;
-        // _currentStoryEvent = _currentStoryEvent.ChooseNextEvent();
+    private void ClickUpdate(InputAction.CallbackContext context)
+    {
+        int id = -1;
+        bool ranThroughEntireCurrentEvent = UpdateCurrentEvent();
+        if (!ranThroughEntireCurrentEvent)
+        {
+            return;
+        }
+
+        manager.TickToNextEvent(id);
+        StoryEvent storyEvent = manager.currentEvent[0];
+        if (storyEvent is Dialogue dialogue)
+        {
+            StartDialogue(dialogue);
+        } else if (storyEvent is Cutscene cutscene)
+        {
+            
+        } else if (storyEvent is SceneStart sceneStart)
+        {
+            
+        }else if (storyEvent is Option)
+        {
+            
+        }
     }
 
-    public bool CreateDialogue(Dialogue dialogue) {
-        if (ongoingAnimationCoroutine != null) {
-            // EndAnimationEarly();
-            return false;
+    private void StartDialogue(Dialogue dialogue)
+    {
+        dialogueObj = Instantiate(dialoguePrefab, transform);
+        StartCoroutine(DialogueAnimation(dialogue));
+    }
+
+    //if current event is at end then return true;
+    private bool UpdateCurrentEvent()
+    {
+        StoryEvent storyEvent = manager.currentEvent[0];
+        if (storyEvent is Dialogue dialogue)
+        {
+            UpdateDialogue(dialogue);
+        } else if (storyEvent is Cutscene cutscene)
+        {
+            
+        } else if (storyEvent is SceneStart sceneStart)
+        {
+            
+        }else if (storyEvent is Option)
+        {
+            
         }
         
-        if (dialogueObjPrefab == null) {
-            dialogueObjPrefab = Instantiate(dialoguePrefab, transform);
-        }
-
-        ongoingAnimationCoroutine = StartCoroutine(DialogueAnimation(dialogue));
         return true;
     }
+
+    private void UpdateDialogue(Dialogue dialogue)
+    {
+        StopCoroutine(DialogueAnimation(dialogue));
+        TextMeshProUGUI tmp = dialogueObj.GetComponentInChildren<TextMeshProUGUI>();
+        tmp.text = fullDialogue;
+    }
+
 
     private string fullDialogue;
     [SerializeField] private float speed = 0.02f;
     private IEnumerator DialogueAnimation(Dialogue dialogue) {
         int index = 0;
         fullDialogue = dialogue.dialogue;
-        TextMeshProUGUI tmp = dialogueObjPrefab.GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI tmp = dialogueObj.GetComponentInChildren<TextMeshProUGUI>();
 
         while (index < dialogue.dialogue.Length) {
             tmp.text = dialogue.dialogue.Substring(0, index + 1);
@@ -58,13 +102,5 @@ public class EventManager : MonoBehaviour {
             yield return new WaitForSeconds(speed);
         }
 
-        ongoingAnimationCoroutine = null;
-    }
-
-    private void EndDialogueAnimationEarly() {
-        StopCoroutine(ongoingAnimationCoroutine);
-        ongoingAnimationCoroutine = null;
-        TextMeshProUGUI tmp = dialogueObjPrefab.GetComponentInChildren<TextMeshProUGUI>();
-        tmp.text = fullDialogue;
     }
 }

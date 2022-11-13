@@ -7,59 +7,34 @@ using UnityEngine.InputSystem;
 
 public class StoryManager : MonoBehaviour {
     public Story story;
-    public StoryEvent currentEvent;
+    public List<StoryEvent> currentEvent;
     [SerializeField] private string managerName;
-
-    private Keybinds keybinds;
-
+    
     [SerializeField] private EventManager eventManager;
     
 
 
-    private void Start() {
+    private void Awake() {
         LoadSave();
-        keybinds = new Keybinds();
-        keybinds.Enable();
-        keybinds.Player.Click.started += ClickUpdate;
-        currentEvent = story.start;
-        eventManager.CreateDialogue(currentEvent as Dialogue);
-    }
-
-    private void ClickUpdate(InputAction.CallbackContext context) {
-        if (currentEvent.childEvents.Count <= 0) {
-            return;
-        }
-        
-        if (currentEvent.childEvents[0].GetType() == typeof(Dialogue)) {
-            //return bool of whether event was actually created or not... OR QUEUE EVENT... wait prob not cuz the queue could only be one long lmao
-            bool ran = eventManager.CreateDialogue(currentEvent.childEvents[0] as Dialogue);
-            if (ran) {
-                currentEvent = currentEvent.childEvents[0];
-            }
-        } else if (currentEvent.childEvents[0].GetType() == typeof(Cutscene)) {
-            
-        } else if (currentEvent.childEvents[0].GetType() == typeof(SceneStart))
-        {
-            throw new NotImplementedException();
-            // bool ran = eventManager.CreateDialogue(currentEvent.childEvents[0] as Dialogue);
-            // if (ran) {
-            //     currentEvent = currentEvent.childEvents[0];
-            // }
-        } else if (currentEvent.childEvents[0].GetType() == typeof(Option))
-        {
-            throw new NotImplementedException();
-            // bool ran = eventManager.CreateDialogue(currentEvent.childEvents[0] as Dialogue);
-            // if (ran) {
-            //     currentEvent = currentEvent.childEvents[0];
-            // }
-        }
-        
-        //attach a listener when giving the event to the event manager to listen to what option was clicked
-        
-        
+        currentEvent = new List<StoryEvent>();
+        currentEvent.Add(story.start);
     }
     
+    public void TickToNextEvent(int id)
+    {
+        if (id == -1)
+        {
+            StoryEvent storyEvent = currentEvent[0];
+            currentEvent.Clear();
+            currentEvent = storyEvent.childEvents;
+            return;
+        }
 
+        StoryEvent optionEvent = currentEvent[id];
+        currentEvent.Clear();
+        currentEvent = optionEvent.childEvents;
+    }
+    
     public void Save(List<Vector2> positions) {
         
         string fileSavePath = GetFilePath();
