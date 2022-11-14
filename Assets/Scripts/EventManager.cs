@@ -79,12 +79,12 @@ public class EventManager : MonoBehaviour {
         
         float rectHeight = dialogueObj.transform.GetChild(1).GetComponent<RectTransform>().rect.height;
         float difference = rectHeight / (options.Length + 1);
-        float temp =  (-rectHeight / 2) + difference;
+        float temp =  (rectHeight / 2) - difference;
         float[] yPositions = new float[options.Length];
         for (int i = 0; i < options.Length; i++)
         {
             yPositions[i] = temp;
-            temp += difference;
+            temp -= difference;
         }
 
         for (int i = 0; i < options.Length; i++)
