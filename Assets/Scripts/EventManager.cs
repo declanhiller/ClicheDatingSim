@@ -13,8 +13,11 @@ public class EventManager : MonoBehaviour {
     
     [SerializeField] private GameObject dialoguePrefab;
     [SerializeField] private GameObject optionPrefab;
+    [SerializeField] private GameObject cutscenePrefab;
     
     private GameObject dialogueObj;
+
+    private GameObject cutsceneObj;
 
     private List<GameObject> optionObjs = new List<GameObject>();
 
@@ -53,7 +56,7 @@ public class EventManager : MonoBehaviour {
             StartDialogue(dialogue);
         } else if (storyEvent is Cutscene cutscene)
         {
-            
+            StartCutscene(cutscene);
         } else if (storyEvent is SceneStart sceneStart)
         {
             
@@ -68,8 +71,8 @@ public class EventManager : MonoBehaviour {
             StartOption(options);
         }
     }
-    
-    
+
+
     private void StartOption(Option[] options)
     {
 
@@ -111,7 +114,19 @@ public class EventManager : MonoBehaviour {
         this.ProcessEvent();
     }
     
-    
+    private void StartCutscene(Cutscene cutscene)
+    {
+        cutsceneObj = Instantiate(cutscenePrefab, transform);
+        currentAnimation = StartCoroutine(CutsceneAnimation(cutscene));
+    }
+
+    private float fadeSpeed = 0f;
+    private IEnumerator CutsceneAnimation(Cutscene cutscene)
+    {
+        // cutsceneObj.GetComponentInChildren<SpriteRenderer>()
+        currentAnimation = null;
+        yield break;
+    }
 
     private void StartDialogue(Dialogue dialogue)
     {
@@ -153,7 +168,7 @@ public class EventManager : MonoBehaviour {
             StopCoroutine(currentAnimation);
             currentAnimation = null;
             TextMeshProUGUI tmp = dialogueObj.GetComponentInChildren<TextMeshProUGUI>();
-            tmp.text = dialogue.dialogue;
+            tmp.text = fullDialogue;
             return false;
         }
 
@@ -162,12 +177,14 @@ public class EventManager : MonoBehaviour {
 
 
     [SerializeField] private float speed = 0.02f;
+    private string fullDialogue;
     private IEnumerator DialogueAnimation(Dialogue dialogue) {
         int index = 0;
         TextMeshProUGUI tmp = dialogueObj.GetComponentInChildren<TextMeshProUGUI>();
+        fullDialogue = StringProcessor.process(dialogue.dialogue);
 
-        while (index < dialogue.dialogue.Length) {
-            tmp.text = dialogue.dialogue.Substring(0, index + 1);
+        while (index < fullDialogue.Length) {
+            tmp.text = fullDialogue.Substring(0, index + 1);
             index++;
             yield return new WaitForSeconds(speed);
         }
