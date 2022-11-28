@@ -10,21 +10,6 @@ public class StringProcessor {
             returnText = returnText.Replace("@name@", PlayerData.playerName);
         }
         
-        while (returnText.Contains("#pronoun#"))
-        {
-            returnText = returnText.Replace("#pronoun#", PlayerData.pronoun1);
-        }
-        
-        while (returnText.Contains("$pronoun$"))
-        {
-            returnText = returnText.Replace("$pronoun$", PlayerData.pronoun2);
-        }
-        
-        while (returnText.Contains("%pronoun%"))
-        {
-            returnText = returnText.Replace("%pronoun%", PlayerData.pronoun3);
-        }
-
         return returnText;
     }
 }

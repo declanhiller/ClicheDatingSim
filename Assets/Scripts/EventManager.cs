@@ -167,7 +167,7 @@ public class EventManager : MonoBehaviour {
         {
             StopCoroutine(currentAnimation);
             currentAnimation = null;
-            TextMeshProUGUI tmp = dialogueObj.GetComponentInChildren<TextMeshProUGUI>();
+            TextMeshProUGUI tmp = GetDialogueBox();
             tmp.text = fullDialogue;
             return false;
         }
@@ -180,9 +180,11 @@ public class EventManager : MonoBehaviour {
     private string fullDialogue;
     private IEnumerator DialogueAnimation(Dialogue dialogue) {
         int index = 0;
-        TextMeshProUGUI tmp = dialogueObj.GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI tmp = GetDialogueBox();
         fullDialogue = StringProcessor.process(dialogue.dialogue);
 
+        GetCharacterNameBox().text = GetCharacterNameString(dialogue.character);
+        
         while (index < fullDialogue.Length) {
             tmp.text = fullDialogue.Substring(0, index + 1);
             index++;
@@ -190,5 +192,48 @@ public class EventManager : MonoBehaviour {
         }
 
         currentAnimation = null;
+    }
+
+    private TextMeshProUGUI GetDialogueBox()
+    {
+        TextMeshProUGUI[] textMeshProUguis = dialogueObj.GetComponentsInChildren<TextMeshProUGUI>();
+        foreach(TextMeshProUGUI box in textMeshProUguis)
+        {
+            if (box.gameObject.CompareTag("Dialogue"))
+            {
+                return box;
+            }
+        }
+
+        return null;
+    }
+
+    private TextMeshProUGUI GetCharacterNameBox()
+    {
+        TextMeshProUGUI[] textMeshProUguis = dialogueObj.GetComponentsInChildren<TextMeshProUGUI>();
+        foreach(TextMeshProUGUI box in textMeshProUguis)
+        {
+            if (box.gameObject.CompareTag("Character"))
+            {
+                return box;
+            }
+        }
+
+        return null;
+    }
+
+    public static string GetCharacterNameString(RomanceCharacters character)
+    {
+        switch (character)
+        {
+            case RomanceCharacters.MILF:
+                return "Euryale";
+            case RomanceCharacters.BAD_BOY:
+                return "Valen";
+            case RomanceCharacters.PLAYER:
+                return PlayerData.playerName;
+        }
+
+        return null;
     }
 }
