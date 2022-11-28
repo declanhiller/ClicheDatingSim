@@ -639,4 +639,5 @@ MonoBehaviour:
   dialoguePrefab: {fileID: 2313442598744161578, guid: 3db404f342452f743827f0233f1ff9ea, type: 3}
   optionPrefab: {fileID: 7298372695323394458, guid: 130263b0a879c9843a3f74ee5327f1e2, type: 3}
   cutscenePrefab: {fileID: 0}
+  sceneStartPrefab: {fileID: 5610816705120641906, guid: f8e8a6221082e42dcab4ff810edcbd1e, type: 3}
   speed: 0.02

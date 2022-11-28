@@ -14,10 +14,11 @@ public class EventManager : MonoBehaviour {
     [SerializeField] private GameObject dialoguePrefab;
     [SerializeField] private GameObject optionPrefab;
     [SerializeField] private GameObject cutscenePrefab;
+    [SerializeField] private GameObject sceneStartPrefab;
     
     private GameObject dialogueObj;
-
     private GameObject cutsceneObj;
+    private GameObject sceneStartObj;
 
     private List<GameObject> optionObjs = new List<GameObject>();
 
@@ -32,7 +33,8 @@ public class EventManager : MonoBehaviour {
         keybinds.Enable();
         keybinds.Player.Click.started += ClickUpdate;
         manager = GameObject.FindGameObjectWithTag("StoryManager").GetComponent<StoryManager>();
-        StartDialogue(manager.currentEvent[0] as Dialogue);
+        // StartDialogue(manager.currentEvent[0] as Dialogue);
+        StartSceneStart(manager.currentEvent[0] as SceneStart);
     }
 
     private void ClickUpdate(InputAction.CallbackContext context)
@@ -59,7 +61,7 @@ public class EventManager : MonoBehaviour {
             StartCutscene(cutscene);
         } else if (storyEvent is SceneStart sceneStart)
         {
-            
+            StartSceneStart(sceneStart);
         }else if (storyEvent is Option)
         {
             Option[] options = new Option[manager.currentEvent.Count];
@@ -70,6 +72,23 @@ public class EventManager : MonoBehaviour {
             
             StartOption(options);
         }
+    }
+
+    private void StartSceneStart(SceneStart sceneStart)
+    {
+        if (sceneStartObj != null)
+        {
+            Destroy(sceneStartObj);
+        }
+
+        if (sceneStart.sceneName != "$end$")
+        {
+            sceneStartObj = Instantiate(sceneStartPrefab, transform);
+            sceneStartObj.GetComponent<RawImage>().texture = sceneStart.background;
+            manager.TickToNextEvent(-1);
+            ProcessEvent();
+        }
+        
     }
 
 

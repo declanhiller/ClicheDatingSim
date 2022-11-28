@@ -69,7 +69,7 @@ public class StoryEditor : EditorWindow {
     }
 
     private void OnDestroy() {
-        if (story != null) {
+        if (story != null && storyManager != null) {
             List<Vector2> positions = new List<Vector2>();
             foreach (UIEventNode node in allEventNodes)
             {
