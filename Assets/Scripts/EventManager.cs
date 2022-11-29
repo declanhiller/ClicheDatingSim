@@ -28,13 +28,17 @@ public class EventManager : MonoBehaviour {
 
     private bool canRun = false;
 
+    [SerializeField] private CharacterImageController imageController;
+
     private void Start() {
         keybinds = new Keybinds();
         keybinds.Enable();
         keybinds.Player.Click.started += ClickUpdate;
         manager = GameObject.FindGameObjectWithTag("StoryManager").GetComponent<StoryManager>();
         sceneStartObj = Instantiate(sceneStartPrefab, transform);
+        sceneStartObj.transform.SetSiblingIndex(0);
         StartSceneStart(manager.currentEvent[0] as SceneStart);
+        imageController.Disable();
     }
 
     private void ClickUpdate(InputAction.CallbackContext context)
@@ -55,7 +59,6 @@ public class EventManager : MonoBehaviour {
         StoryEvent storyEvent = manager.currentEvent[0];
         if (storyEvent is Dialogue dialogue)
         {
-            Destroy(dialogueObj);
             StartDialogue(dialogue);
         } else if (storyEvent is Cutscene cutscene)
         {
@@ -78,7 +81,7 @@ public class EventManager : MonoBehaviour {
 
     private void StartSceneStart(SceneStart sceneStart)
     {
-
+        imageController.Disable();
         if (sceneStartObj == null) {
             StartCoroutine(SceneStartFadeIn(sceneStart));
             return;
@@ -184,7 +187,24 @@ public class EventManager : MonoBehaviour {
 
     private void StartDialogue(Dialogue dialogue)
     {
-        dialogueObj = Instantiate(dialoguePrefab, transform);
+        if (dialogueObj == null) {
+            dialogueObj = Instantiate(dialoguePrefab, transform);
+            currentAnimation = StartCoroutine(DialogueFadeInAnimation(dialogue));
+            return;
+        }
+        currentAnimation = StartCoroutine(DialogueAnimation(dialogue));
+    }
+
+    private IEnumerator DialogueFadeInAnimation(Dialogue dialogue) {
+        fadeIn = true;
+        Image box = dialogueObj.GetComponentInChildren<Image>();
+        Color color = box.color;
+        box.color = new Color(color.r, color.g, color.b, 0);
+        while (box.color.a < 0.8f) {
+            box.color = new Color(color.r, color.g, color.b, box.color.a + (fadeSpeed * Time.deltaTime * 2));
+            yield return new WaitForEndOfFrame();
+        }
+        fadeIn = false;
         currentAnimation = StartCoroutine(DialogueAnimation(dialogue));
     }
 
@@ -215,8 +235,13 @@ public class EventManager : MonoBehaviour {
         return hasBeenClicked;
     }
 
+    private bool fadeIn;
     private bool UpdateDialogue(Dialogue dialogue)
     {
+        if (fadeIn) {
+            return false;
+        }
+        
         if (currentAnimation != null)
         {
             StopCoroutine(currentAnimation);
@@ -239,6 +264,7 @@ public class EventManager : MonoBehaviour {
     [SerializeField] private float speed = 0.02f;
     private string fullDialogue;
     private IEnumerator DialogueAnimation(Dialogue dialogue) {
+        imageController.SetCharacter(dialogue.character, Expression.ANGRY);
         int index = 0;
         TextMeshProUGUI tmp = GetDialogueBox();
         fullDialogue = StringProcessor.process(dialogue.dialogue);
