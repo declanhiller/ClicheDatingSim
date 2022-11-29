@@ -84,7 +84,7 @@ public class EventManager : MonoBehaviour {
             return;
         }
         
-        if (sceneStart.sceneName == "$end#") {
+        if (sceneStart.sceneName == "$end$") {
             StartCoroutine(SceneStartFadeOut(false, sceneStart));
             return;
         }
@@ -223,10 +223,15 @@ public class EventManager : MonoBehaviour {
             currentAnimation = null;
             TextMeshProUGUI tmp = GetDialogueBox();
             tmp.text = fullDialogue;
+            if (manager.PeekNextEventType() == typeof(Option)) {
+                manager.TickToNextEvent(-1);
+                ProcessEvent();
+            }
             return false;
         }
-
-        // Destroy(dialogueObj);
+        
+        
+        
         return true;
     }
 
@@ -247,6 +252,10 @@ public class EventManager : MonoBehaviour {
         }
 
         currentAnimation = null;
+        if (manager.PeekNextEventType() == typeof(Option)) {
+            manager.TickToNextEvent(-1);
+            ProcessEvent();
+        }
     }
 
     private TextMeshProUGUI GetDialogueBox()

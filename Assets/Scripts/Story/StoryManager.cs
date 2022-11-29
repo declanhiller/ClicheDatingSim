@@ -35,6 +35,10 @@ public class StoryManager : MonoBehaviour {
         currentEvent = optionEvent.childEvents;
     }
     
+    public Type PeekNextEventType() {
+        return currentEvent[0].childEvents[0].GetType();
+    }
+    
     public void Save(List<Vector2> positions) {
         
         string fileSavePath = GetFilePath();
