@@ -212,6 +212,9 @@ public class StoryManager : MonoBehaviour {
             StoryEvent storyEvent = tracker[i];
             foreach (int id in savableTracker[i].children)
             {
+                if (id == -1) {
+                    continue;
+                }
                 storyEvent.childEvents.Add(tracker[id]);
             }
         }
@@ -226,7 +229,7 @@ public class StoryManager : MonoBehaviour {
     }
 
     private string GetFilePath() {
-        string fileSavePath = Application.persistentDataPath + "/" + managerName + ".json";
+        string fileSavePath = Application.dataPath + "/" + managerName + ".json";
         return fileSavePath;
     }
 }

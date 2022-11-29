@@ -33,7 +33,7 @@ public class EventManager : MonoBehaviour {
         keybinds.Enable();
         keybinds.Player.Click.started += ClickUpdate;
         manager = GameObject.FindGameObjectWithTag("StoryManager").GetComponent<StoryManager>();
-        // StartDialogue(manager.currentEvent[0] as Dialogue);
+        sceneStartObj = Instantiate(sceneStartPrefab, transform);
         StartSceneStart(manager.currentEvent[0] as SceneStart);
     }
 
@@ -55,9 +55,11 @@ public class EventManager : MonoBehaviour {
         StoryEvent storyEvent = manager.currentEvent[0];
         if (storyEvent is Dialogue dialogue)
         {
+            Destroy(dialogueObj);
             StartDialogue(dialogue);
         } else if (storyEvent is Cutscene cutscene)
         {
+            Destroy(dialogueObj);
             StartCutscene(cutscene);
         } else if (storyEvent is SceneStart sceneStart)
         {
@@ -76,19 +78,48 @@ public class EventManager : MonoBehaviour {
 
     private void StartSceneStart(SceneStart sceneStart)
     {
-        if (sceneStartObj != null)
-        {
-            Destroy(sceneStartObj);
-        }
 
-        if (sceneStart.sceneName != "$end$")
-        {
-            sceneStartObj = Instantiate(sceneStartPrefab, transform);
-            sceneStartObj.GetComponent<RawImage>().texture = sceneStart.background;
-            manager.TickToNextEvent(-1);
-            ProcessEvent();
+        if (sceneStartObj == null) {
+            StartCoroutine(SceneStartFadeIn(sceneStart));
+            return;
         }
         
+        if (sceneStart.sceneName == "$end#") {
+            StartCoroutine(SceneStartFadeOut(false, sceneStart));
+            return;
+        }
+        
+        StartCoroutine(SceneStartFadeOut(true, sceneStart));
+    }
+
+    
+    private IEnumerator SceneStartFadeOut(bool shouldContinue, SceneStart sceneStart) {
+        Destroy(dialogueObj);
+
+        Image background = sceneStartObj.GetComponent<Image>();
+        while (background.color.a > 0) {
+            background.color = new Color(background.color.r, background.color.g, background.color.b,
+                background.color.a - (fadeSpeed * Time.deltaTime));
+            yield return new WaitForEndOfFrame();
+        }
+        if (shouldContinue) {
+            StartCoroutine(SceneStartFadeIn(sceneStart));
+        }
+    }
+
+
+    private IEnumerator SceneStartFadeIn(SceneStart sceneStart) {
+        Image background = sceneStartObj.GetComponent<Image>();
+        background.sprite = Sprite.Create(sceneStart.background, new Rect(0, 0 , sceneStart.background.width, sceneStart.background.height), 
+            new Vector2(0.5f, 0.5f));
+        Color backgroundColor = background.color;
+        background.color = new Color(backgroundColor.r, backgroundColor.g, backgroundColor.b, 0);
+        while (background.color.a < 1) {
+            background.color = new Color(backgroundColor.r, backgroundColor.g, backgroundColor.b, background.color.a + (fadeSpeed * Time.deltaTime));
+            yield return new WaitForEndOfFrame();
+        }
+        manager.TickToNextEvent(-1);
+        ProcessEvent();
     }
 
 
@@ -139,7 +170,7 @@ public class EventManager : MonoBehaviour {
         currentAnimation = StartCoroutine(CutsceneAnimation(cutscene));
     }
 
-    private float fadeSpeed = 0f;
+    [SerializeField] private float fadeSpeed = 0.1f;
     private IEnumerator CutsceneAnimation(Cutscene cutscene)
     {
         // cutsceneObj.GetComponentInChildren<SpriteRenderer>()
@@ -156,6 +187,7 @@ public class EventManager : MonoBehaviour {
     //if current event is at end then return true;
     private bool UpdateCurrentEvent()
     {
+
         StoryEvent storyEvent = manager.currentEvent[0];
         if (storyEvent is Dialogue dialogue)
         {
@@ -191,6 +223,7 @@ public class EventManager : MonoBehaviour {
             return false;
         }
 
+        // Destroy(dialogueObj);
         return true;
     }
 
