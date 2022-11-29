@@ -92,8 +92,10 @@ public class EventManager : MonoBehaviour {
         StartCoroutine(SceneStartFadeOut(true, sceneStart));
     }
 
+    private bool isSceneStartTransitioning = false;
     
     private IEnumerator SceneStartFadeOut(bool shouldContinue, SceneStart sceneStart) {
+        isSceneStartTransitioning = true;
         Destroy(dialogueObj);
 
         Image background = sceneStartObj.GetComponent<Image>();
@@ -118,6 +120,8 @@ public class EventManager : MonoBehaviour {
             background.color = new Color(backgroundColor.r, backgroundColor.g, backgroundColor.b, background.color.a + (fadeSpeed * Time.deltaTime));
             yield return new WaitForEndOfFrame();
         }
+
+        isSceneStartTransitioning = false;
         manager.TickToNextEvent(-1);
         ProcessEvent();
     }
@@ -195,9 +199,8 @@ public class EventManager : MonoBehaviour {
         } else if (storyEvent is Cutscene cutscene)
         {
             
-        } else if (storyEvent is SceneStart sceneStart)
-        {
-            
+        } else if (storyEvent is SceneStart sceneStart) {
+            return !isSceneStartTransitioning;
         }else if (storyEvent is Option)
         {
             return UpdateOption();
