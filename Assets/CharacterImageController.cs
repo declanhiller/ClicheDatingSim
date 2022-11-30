@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class CharacterImageController : MonoBehaviour {
     [SerializeField] private Sprite milfRegular;
+    [SerializeField] private Sprite badBoyRegular;
     [SerializeField] private Image image;
     
     
@@ -18,7 +19,7 @@ public class CharacterImageController : MonoBehaviour {
         if (character == RomanceCharacters.MILF) {
             image.sprite = milfRegular;
         } else if (character == RomanceCharacters.BAD_BOY) {
-            image.sprite = null;
+            image.sprite = badBoyRegular;
         }
     }
 

@@ -274,7 +274,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -338}
+  m_AnchoredPosition: {x: 0, y: -400}
   m_SizeDelta: {x: 764, y: 2048}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &530808055
@@ -289,7 +289,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d44c227c6c0dc7e4e813c33df10e91ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  milfRegular: {fileID: 21300000, guid: 3b4e6c2cc0a8afb49a57378f6290b5a5, type: 3}
+  milfRegular: {fileID: 21300000, guid: dd21d4b1f5147624d9036ecb6ce65b9a, type: 3}
+  badBoyRegular: {fileID: 21300000, guid: 5a00028f00e30a9479bcfdc1b4c23726, type: 3}
   image: {fileID: 530808056}
 --- !u!114 &530808056
 MonoBehaviour:
@@ -516,14 +517,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00abedce3cdbbba46bf2d86c9518c9f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Event:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  NodeID: 0
-  TMPFont: {fileID: 0}
-  Icon: {fileID: 0}
-  Audio: {fileID: 0}
 --- !u!4 &1297853504
 Transform:
   m_ObjectHideFlags: 0
@@ -551,14 +544,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00abedce3cdbbba46bf2d86c9518c9f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Event:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  NodeID: 2
-  TMPFont: {fileID: 0}
-  Icon: {fileID: 0}
-  Audio: {fileID: 0}
 --- !u!114 &1297853506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -571,14 +556,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00abedce3cdbbba46bf2d86c9518c9f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Event:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  NodeID: 1
-  TMPFont: {fileID: 0}
-  Icon: {fileID: 0}
-  Audio: {fileID: 0}
 --- !u!1 &1330700758
 GameObject:
   m_ObjectHideFlags: 0
