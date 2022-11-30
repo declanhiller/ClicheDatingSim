@@ -21,7 +21,6 @@ public abstract class StoryEvent{
         CONTENT_STYLE.wordWrap = true;
         CONTENT_STYLE.clipping = TextClipping.Clip;
         Dialogue.SetupDialogue();
-        Cutscene.SetupCutscene();
         Option.SetupOption();
         SceneStart.SetupSceneStart();
     }

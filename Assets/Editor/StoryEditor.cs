@@ -207,12 +207,6 @@ public class StoryEditor : EditorWindow {
         Dialogue dialogue = new Dialogue();
         CreateChunk(dialogue);
     }
-    
-    void CreateCutscene() {
-        Cutscene cutscene = new Cutscene();
-        CreateChunk(cutscene);
-
-    }
 
     void CreateSceneStart() {
         SceneStart sceneStart = new SceneStart();
@@ -360,7 +354,6 @@ public class StoryEditor : EditorWindow {
         GenericMenu menu = new GenericMenu();
             
         menu.AddItem(new GUIContent("Create/Create Dialogue"), false, CreateDialogueChunk);
-        menu.AddItem(new GUIContent("Create/Create Cutscene"), false, CreateCutscene);
         menu.AddItem(new GUIContent("Create/Create Scene Start"), false, CreateSceneStart);
         menu.AddItem(new GUIContent("Create/Create Option"), false, CreateOption);
         menu.AddItem(new GUIContent("Check Size"), false, CheckSizeOfStory);

@@ -60,10 +60,6 @@ public class EventManager : MonoBehaviour {
         if (storyEvent is Dialogue dialogue)
         {
             StartDialogue(dialogue);
-        } else if (storyEvent is Cutscene cutscene)
-        {
-            Destroy(dialogueObj);
-            StartCutscene(cutscene);
         } else if (storyEvent is SceneStart sceneStart)
         {
             StartSceneStart(sceneStart);
@@ -170,20 +166,8 @@ public class EventManager : MonoBehaviour {
         manager.TickToNextEvent(choiceId);
         this.ProcessEvent();
     }
-    
-    private void StartCutscene(Cutscene cutscene)
-    {
-        cutsceneObj = Instantiate(cutscenePrefab, transform);
-        currentAnimation = StartCoroutine(CutsceneAnimation(cutscene));
-    }
 
     [SerializeField] private float fadeSpeed = 0.1f;
-    private IEnumerator CutsceneAnimation(Cutscene cutscene)
-    {
-        // cutsceneObj.GetComponentInChildren<SpriteRenderer>()
-        currentAnimation = null;
-        yield break;
-    }
 
     private void StartDialogue(Dialogue dialogue)
     {
@@ -219,10 +203,7 @@ public class EventManager : MonoBehaviour {
         if (storyEvent is Dialogue dialogue)
         {
             return UpdateDialogue(dialogue);
-        } else if (storyEvent is Cutscene cutscene)
-        {
-            
-        } else if (storyEvent is SceneStart sceneStart) {
+        }else if (storyEvent is SceneStart sceneStart) {
             return !isSceneStartTransitioning;
         }else if (storyEvent is Option)
         {

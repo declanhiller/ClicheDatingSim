@@ -39,11 +39,7 @@ public class StoryInspector
         {
             RenderDialogueInspector(dialogue);
             window.Repaint();
-        }else if (storyEvent is Cutscene cutscene)
-        {
-            RenderCutsceneInspector(cutscene);
-            window.Repaint();
-        } else if (storyEvent is SceneStart sceneStart) {
+        }else if (storyEvent is SceneStart sceneStart) {
             RenderSceneStartInspector(sceneStart);
             window.Repaint();
         } else if (storyEvent is Option option) {
@@ -76,24 +72,6 @@ public class StoryInspector
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Background:", GUILayout.MinWidth(labelWidth), GUILayout.MaxWidth(labelWidth));
         sceneStart.background = (Texture2D) EditorGUILayout.ObjectField(sceneStart.background, typeof(Texture2D), false, GUILayout.MaxWidth(fieldWidth));
-        EditorGUILayout.EndHorizontal();
-    }
-
-    private void RenderCutsceneInspector(Cutscene cutscene)
-    {
-        float labelWidth = inspectorWidth * 0.4f;
-        float fieldWidth = inspectorWidth * 0.6f;
-        
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Cutscene Name: ");
-        cutscene.cutsceneName = GUILayout.TextArea(cutscene.cutsceneName);
-        GUILayout.EndHorizontal();
-        
-        GUILayout.Space(VERTICAL_SPACING);
-
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Background:", GUILayout.MinWidth(labelWidth), GUILayout.MaxWidth(labelWidth));
-        cutscene.image = (Texture2D) EditorGUILayout.ObjectField(cutscene.image, typeof(Texture2D), false, GUILayout.MaxWidth(fieldWidth));
         EditorGUILayout.EndHorizontal();
     }
 

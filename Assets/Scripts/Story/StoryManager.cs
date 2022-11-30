@@ -56,7 +56,6 @@ public class StoryManager : MonoBehaviour {
         SavableStory savableStory = new SavableStory();
         
         List<SavableDialogue> savableDialogueBoxes = new List<SavableDialogue>();
-        List<SavableCutscene> savableCutsceneBoxes = new List<SavableCutscene>();
         List<SavableSceneStart> savableSceneStartBoxes = new List<SavableSceneStart>();
         List<SavableOption> savableOptionBoxes = new List<SavableOption>();
 
@@ -77,10 +76,6 @@ public class StoryManager : MonoBehaviour {
                 SavableDialogue savableDialogue = new SavableDialogue(dialogue);
                 savableDialogueBoxes.Add(savableDialogue);
                 savableEvent = savableDialogue;
-            } else if (storyEvent is Cutscene cutscene) {
-                SavableCutscene savableCutscene = new SavableCutscene(cutscene);
-                savableCutsceneBoxes.Add(savableCutscene);
-                savableEvent = savableCutscene;
             } else if (storyEvent is SceneStart sceneStart) {
                 SavableSceneStart savableSceneStart = new SavableSceneStart(sceneStart);
                 savableSceneStartBoxes.Add(savableSceneStart);
@@ -112,9 +107,6 @@ public class StoryManager : MonoBehaviour {
         
         savableStory.dialogueBoxes = new SavableDialogue[savableDialogueBoxes.Count];
         savableDialogueBoxes.CopyTo(savableStory.dialogueBoxes);
-
-        savableStory.cutsceneBoxes = new SavableCutscene[savableCutsceneBoxes.Count];
-        savableCutsceneBoxes.CopyTo(savableStory.cutsceneBoxes);
 
         savableStory.sceneStartBoxes = new SavableSceneStart[savableSceneStartBoxes.Count];
         savableSceneStartBoxes.CopyTo(savableStory.sceneStartBoxes);
@@ -167,21 +159,6 @@ public class StoryManager : MonoBehaviour {
             
                 tracker.Add(savableDialogue.id, dialogue);
                 savableTracker.Add(savableDialogue.id, savableDialogue);
-            }
-        }
-
-        if (savableStory.cutsceneBoxes != null) {
-            foreach (SavableCutscene savableCutscene in savableStory.cutsceneBoxes) {
-                Cutscene cutscene = new Cutscene();
-                cutscene.cutsceneName = savableCutscene.cutsceneName;
-
-                cutscene.image = AssetDatabase.LoadAssetAtPath<Texture2D>(savableCutscene.path);
-
-                story.allEvents.Add(cutscene);
-                positions.Add(new Vector2(savableCutscene.posX, savableCutscene.posY));
-                tracker.Add(savableCutscene.id, cutscene);
-                savableTracker.Add(savableCutscene.id, savableCutscene);
-            
             }
         }
 
