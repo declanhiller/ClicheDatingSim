@@ -137,7 +137,7 @@ public class StoryManager : MonoBehaviour {
         }
         
         string json = File.ReadAllText(GetFilePath());
-
+        
         if (string.IsNullOrEmpty(json)) {
             story = new Story();
             return new List<Vector2>();
@@ -160,6 +160,7 @@ public class StoryManager : MonoBehaviour {
                 Dialogue dialogue = new Dialogue();
                 dialogue.character = (RomanceCharacters) savableDialogue.character;
                 dialogue.dialogue = savableDialogue.dialogue;
+                dialogue.expression = (Expression) savableDialogue.expression;
             
                 story.allEvents.Add(dialogue);
                 positions.Add(new Vector2(savableDialogue.posX, savableDialogue.posY));

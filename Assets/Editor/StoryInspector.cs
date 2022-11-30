@@ -109,14 +109,22 @@ public class StoryInspector
         GUILayout.EndHorizontal();
         
         GUILayout.Space(VERTICAL_SPACING);
-
+        
         GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Expression:", GUILayout.MinWidth(labelWidth), GUILayout.MaxWidth(labelWidth));
+        dialogue.expression = (Expression) EditorGUILayout.EnumPopup(dialogue.expression, GUILayout.MaxWidth(fieldWidth));
+        GUILayout.EndHorizontal();
 
+        GUILayout.Space(VERTICAL_SPACING);
+        
+        GUILayout.BeginHorizontal();
         GUILayout.Label("Dialogue: ");
         // EditorGUILayout.LabelField("Dialogue:", GUILayout.MinWidth(labelWidth), GUILayout.MaxWidth(labelWidth));
         // dialogue.dialogue = EditorGUILayout.TextField(dialogue.dialogue, GUILayout.MaxWidth(fieldWidth));
         dialogue.dialogue = GUILayout.TextArea(dialogue.dialogue);
         GUILayout.EndHorizontal();
+        
+
         
     }
 

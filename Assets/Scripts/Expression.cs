@@ -1,3 +1,3 @@
 ﻿public enum Expression {
-    CONCERNED, ANGRY, SMIRK
+    NEUTRAL = 0, CONCERNED = 1, ANGRY = 2, SMIRK = 3
 }
