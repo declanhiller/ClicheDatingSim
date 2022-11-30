@@ -14,6 +14,7 @@ public class MarkerController : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         rectTransform = GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(minSize, minSize);
     }
 
     // Update is called once per frame
