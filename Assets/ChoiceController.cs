@@ -6,25 +6,16 @@ using UnityEngine.EventSystems;
 
 public class ChoiceController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private float minSizeX;
-    private float minSizeY;
-    [SerializeField] private float sizeIncrease = 10;
-    private RectTransform rectTransform;
-    private void Start()
-    {
-        rectTransform = GetComponent<RectTransform>();
-        minSizeX = rectTransform.sizeDelta.x;
-        minSizeY = rectTransform.sizeDelta.y;
-    }
+    private float targetScale = 1.02f;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        rectTransform.sizeDelta = new Vector2(minSizeX + sizeIncrease, minSizeY + sizeIncrease);
+        transform.localScale = new Vector2(targetScale, targetScale);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        rectTransform.sizeDelta = new Vector2(minSizeX, minSizeY);
+        transform.localScale = new Vector2(1, 1);
 
     }
 }
