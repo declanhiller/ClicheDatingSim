@@ -11,7 +11,6 @@ public class StoryManager : MonoBehaviour {
     [SerializeField] private string managerName;
     
     [SerializeField] private EventManager eventManager;
-    
 
 
     private void Awake() {
@@ -166,8 +165,10 @@ public class StoryManager : MonoBehaviour {
             foreach (SavableSceneStart savableSceneStart in savableStory.sceneStartBoxes) {
                 SceneStart sceneStart = new SceneStart();
                 sceneStart.sceneName = savableSceneStart.sceneName;
-                sceneStart.background = AssetDatabase.LoadAssetAtPath<Texture2D>(savableSceneStart.backgroundImagePath);
-                
+                sceneStart.background = Resources.Load<Texture2D>(savableSceneStart.backgroundName);
+// #if UNITY_EDITOR
+//                 sceneStart.background = AssetDatabase.LoadAssetAtPath<Texture2D>(savableSceneStart.backgroundImagePath);
+// #endif
                 story.allEvents.Add(sceneStart);
                 positions.Add(new Vector2(savableSceneStart.posX, savableSceneStart.posY));
                 tracker.Add(savableSceneStart.id, sceneStart);
@@ -211,7 +212,7 @@ public class StoryManager : MonoBehaviour {
     }
 
     private string GetFilePath() {
-        string fileSavePath = Application.dataPath + "/" + managerName + ".json";
+        string fileSavePath = Application.persistentDataPath + "/" + managerName + ".json";
         return fileSavePath;
     }
 }
