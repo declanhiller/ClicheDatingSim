@@ -189,9 +189,12 @@ public class EventManager : MonoBehaviour {
     {
         if (dialogueObj == null) {
             dialogueObj = Instantiate(dialoguePrefab, transform);
+            dialogueObj.transform.GetChild(0).GetChild(2).GetComponent<Image>().enabled = false;
             currentAnimation = StartCoroutine(DialogueFadeInAnimation(dialogue));
             return;
         }
+        
+        dialogueObj.transform.GetChild(0).GetChild(2).GetComponent<Image>().enabled = false;
         currentAnimation = StartCoroutine(DialogueAnimation(dialogue));
     }
 
@@ -247,7 +250,8 @@ public class EventManager : MonoBehaviour {
             StopCoroutine(currentAnimation);
             currentAnimation = null;
             TextMeshProUGUI tmp = GetDialogueBox();
-            tmp.text = fullDialogue;
+            tmp.text = fullDialogue;        
+            dialogueObj.transform.GetChild(0).GetChild(2).GetComponent<Image>().enabled = true;
             if (manager.PeekNextEventType() == typeof(Option)) {
                 manager.TickToNextEvent(-1);
                 ProcessEvent();
@@ -276,6 +280,8 @@ public class EventManager : MonoBehaviour {
             index++;
             yield return new WaitForSeconds(speed);
         }
+
+        dialogueObj.transform.GetChild(0).GetChild(2).GetComponent<Image>().enabled = true;
 
         currentAnimation = null;
         if (manager.PeekNextEventType() == typeof(Option)) {
