@@ -12,7 +12,11 @@ public class SceneController : MonoBehaviour {
     }
 
     public void BadBoyScene() {
-        
+        SceneManager.LoadScene("BadBoyScene");
+    }
+
+    public void BadBoyScene2() {
+        SceneManager.LoadScene("BadBoyScene2");
     }
 
     public void Name() {

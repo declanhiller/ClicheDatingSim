@@ -87,6 +87,8 @@ public class EventManager : MonoBehaviour {
 
             if (sceneStart.sceneName.Contains("1")) {
                 StartCoroutine(SceneStartFadeOut(1));
+            } else if (sceneStart.sceneName.Contains("2")) {
+                StartCoroutine(SceneStartFadeOut(2));
             }
             
             StartCoroutine(SceneStartFadeOut(false, sceneStart));
@@ -108,8 +110,13 @@ public class EventManager : MonoBehaviour {
                 background.color.a - (fadeSpeed * Time.deltaTime));
             yield return new WaitForEndOfFrame();
         }
-        
-        GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>().ChooseCharacter();
+
+        SceneController sceneController = GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>();
+        if (num == 1) {
+            sceneController.ChooseCharacter();
+        } else if (num == 2) {
+            sceneController.BadBoyScene2();
+        }
         
     }
     
@@ -168,7 +175,8 @@ public class EventManager : MonoBehaviour {
             Option option = options[i];
             GameObject optionObj = Instantiate(optionPrefab, dialogueObj.transform.GetChild(1));
             optionObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, yPositions[i]);
-            optionObj.GetComponentInChildren<TextMeshProUGUI>().text = option.option;
+            string text = StringProcessor.process(option.option);
+            optionObj.GetComponentInChildren<TextMeshProUGUI>().text = text;
             var i1 = i;
             optionObj.GetComponentInChildren<Button>().onClick.AddListener(() => ChooseNextEvent(i1));
             optionObjs.Add(optionObj);
@@ -331,6 +339,12 @@ public class EventManager : MonoBehaviour {
                 return PlayerData.playerName;
             case RomanceCharacters.NARRATOR:
                 return "Narrator";
+            case RomanceCharacters.COWORKER_ONE:
+                return "Coworker 1";
+            case RomanceCharacters.COWORKER_TWO:
+                return "Coworker 2";
+            case RomanceCharacters.GOON:
+                return "Goon";
         }
 
         return null;
