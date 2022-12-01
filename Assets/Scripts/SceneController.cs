@@ -23,11 +23,14 @@ public class SceneController : MonoBehaviour {
         SceneManager.LoadScene("BadBoyScene3");
     }
 
-    public void BadBoyPhoto()
-    {
-        
+    public void BadBoyPhoto() {
+        SceneManager.LoadScene("BadBoyPhoto");
     }
 
+    public void MilfPhoto() {
+        SceneManager.LoadScene("MilfPhoto");
+    }
+    
     public void Name() {
         SceneManager.LoadScene("Naming");
     }

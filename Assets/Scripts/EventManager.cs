@@ -121,8 +121,10 @@ public class EventManager : MonoBehaviour {
         }else if (num == 3)
         {
             sceneController.BadBoyScene3();
-        }else if(num == 4) {
+        }else if (num == 4) {
             sceneController.BadBoyPhoto();
+        }else if(num == 5) {
+            sceneController.MilfPhoto();
         } else {
             sceneController.StartMenu();
         }
