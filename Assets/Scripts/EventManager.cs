@@ -84,6 +84,11 @@ public class EventManager : MonoBehaviour {
         }
         
         if (sceneStart.sceneName.Contains("$end$")) {
+
+            if (sceneStart.sceneName.Contains("1")) {
+                StartCoroutine(SceneStartFadeOut(1));
+            }
+            
             StartCoroutine(SceneStartFadeOut(false, sceneStart));
             return;
         }
@@ -92,6 +97,21 @@ public class EventManager : MonoBehaviour {
     }
 
     private bool isSceneStartTransitioning = false;
+    
+    private IEnumerator SceneStartFadeOut(int num) {
+        isSceneStartTransitioning = true;
+        Destroy(dialogueObj);
+
+        Image background = sceneStartObj.GetComponent<Image>();
+        while (background.color.a > 0) {
+            background.color = new Color(background.color.r, background.color.g, background.color.b,
+                background.color.a - (fadeSpeed * Time.deltaTime));
+            yield return new WaitForEndOfFrame();
+        }
+        
+        GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>().ChooseCharacter();
+        
+    }
     
     private IEnumerator SceneStartFadeOut(bool shouldContinue, SceneStart sceneStart) {
         isSceneStartTransitioning = true;

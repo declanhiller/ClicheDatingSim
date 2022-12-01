@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ChooseCharacterScreen.unity
     guid: dc4ec1008ab39d748b12f7f86b896c62
+  - enabled: 1
+    path: Assets/Scenes/Prologue.unity
+    guid: 35b1ccd6947208142a401bdade190d10
   m_configObjects: {}

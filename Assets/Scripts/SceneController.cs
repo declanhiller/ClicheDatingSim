@@ -16,7 +16,7 @@ public class SceneController : MonoBehaviour {
     }
 
     public void Prologue() {
-        
+        SceneManager.LoadScene("Prologue");
     }
     
     public void ChooseCharacter() {
