@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Prologue.unity
     guid: 35b1ccd6947208142a401bdade190d10
+  - enabled: 1
+    path: Assets/Scenes/MilfScene.unity
+    guid: 75a1d32541972f1428f01d7805de734f
   m_configObjects: {}

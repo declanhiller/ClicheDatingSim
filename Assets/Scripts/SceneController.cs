@@ -8,7 +8,7 @@ public class SceneController : MonoBehaviour {
     
 
     public void MilfScene() {
-        
+        SceneManager.LoadScene("MilfScene");
     }
 
     public void BadBoyScene() {
