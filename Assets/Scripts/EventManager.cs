@@ -89,9 +89,11 @@ public class EventManager : MonoBehaviour {
                 StartCoroutine(SceneStartFadeOut(1));
             } else if (sceneStart.sceneName.Contains("2")) {
                 StartCoroutine(SceneStartFadeOut(2));
+            } else if (sceneStart.sceneName.Contains("3")) {
+                StartCoroutine(SceneStartFadeOut(3));
+            } else {
+                StartCoroutine(SceneStartFadeOut(0));
             }
-            
-            StartCoroutine(SceneStartFadeOut(false, sceneStart));
             return;
         }
         
@@ -116,6 +118,10 @@ public class EventManager : MonoBehaviour {
             sceneController.ChooseCharacter();
         } else if (num == 2) {
             sceneController.BadBoyScene2();
+        }else if (num == 3) {
+            sceneController.BadBoyScene3();
+        } else {
+            sceneController.StartMenu();
         }
         
     }
@@ -345,6 +351,8 @@ public class EventManager : MonoBehaviour {
                 return "Coworker 2";
             case RomanceCharacters.GOON:
                 return "Goon";
+            case RomanceCharacters.THUG:
+                return "Thug";
         }
 
         return null;

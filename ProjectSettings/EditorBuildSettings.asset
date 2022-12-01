@@ -29,4 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BadBoyScene.unity
     guid: f2e61ff578110d54e90004cbe3705762
+  - enabled: 1
+    path: Assets/Scenes/BadBoyScene3.unity
+    guid: e3abc4298f3b937479ba8af7d525c1c4
   m_configObjects: {}
