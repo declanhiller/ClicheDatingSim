@@ -47,6 +47,8 @@ public class StoryEditor : EditorWindow {
         if (activeObj != null) {
             if (activeObj.GetComponent<StoryManager>() != null) {
                 if (activeObj.GetComponent<StoryManager>() != storyManager) {
+                    UIEventNode.SetSpecialValues();
+                    StoryEvent.Setup();
                     LoadNewAsset(currentAsset.GetComponent<StoryManager>());
                 }
             }
