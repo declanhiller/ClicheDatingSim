@@ -126,9 +126,12 @@ public class StoryManager : MonoBehaviour {
             fileStream.Close();
             return new List<Vector2>();
         }
-        
-        string json = File.ReadAllText(GetFilePath());
-        
+
+        TextAsset textAsset = Resources.Load<TextAsset>(managerName);
+        string json = textAsset.text;
+        // #if UNITY_EDITOR
+        // json = File.ReadAllText(GetFilePath());
+        // #endif
         if (string.IsNullOrEmpty(json)) {
             story = new Story();
             return new List<Vector2>();
