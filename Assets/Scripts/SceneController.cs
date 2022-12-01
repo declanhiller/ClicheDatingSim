@@ -15,6 +15,10 @@ public class SceneController : MonoBehaviour {
         
     }
 
+    public void Name() {
+        SceneManager.LoadScene("Naming");
+    }
+
     public void Prologue() {
         SceneManager.LoadScene("Prologue");
     }

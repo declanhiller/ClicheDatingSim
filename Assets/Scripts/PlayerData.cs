@@ -1,4 +1,4 @@
 public class PlayerData
 {
-    public static string playerName = "Declan";
+    public static string playerName = "You";
 }

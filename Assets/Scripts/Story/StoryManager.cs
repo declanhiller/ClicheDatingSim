@@ -213,6 +213,7 @@ public class StoryManager : MonoBehaviour {
 
     private string GetFilePath() {
         string fileSavePath = Application.persistentDataPath + "/" + managerName + ".json";
+        print(fileSavePath);
         return fileSavePath;
     }
 }
