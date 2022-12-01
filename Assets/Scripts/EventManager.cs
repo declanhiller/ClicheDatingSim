@@ -249,7 +249,7 @@ public class EventManager : MonoBehaviour {
     [SerializeField] private float speed = 0.02f;
     private string fullDialogue;
     private IEnumerator DialogueAnimation(Dialogue dialogue) {
-        imageController.SetCharacter(dialogue.character, Expression.ANGRY);
+        imageController.SetCharacter(dialogue.character, dialogue.expression);
         int index = 0;
         TextMeshProUGUI tmp = GetDialogueBox();
         fullDialogue = StringProcessor.process(dialogue.dialogue);

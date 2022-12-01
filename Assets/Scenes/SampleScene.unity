@@ -123,37 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &348044612
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 348044613}
-  m_Layer: 0
-  m_Name: BadBoyCharacterController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &348044613
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 348044612}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 788652691}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,7 +220,7 @@ GameObject:
   - component: {fileID: 530808056}
   - component: {fileID: 530808055}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ImageController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -289,8 +258,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d44c227c6c0dc7e4e813c33df10e91ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  milfRegular: {fileID: 21300000, guid: dd21d4b1f5147624d9036ecb6ce65b9a, type: 3}
-  badBoyRegular: {fileID: 21300000, guid: 5a00028f00e30a9479bcfdc1b4c23726, type: 3}
+  milfNeutral: {fileID: 21300000, guid: dd21d4b1f5147624d9036ecb6ce65b9a, type: 3}
+  milfAngry: {fileID: 21300000, guid: 7938e98a965f5e9499737ae35261171d, type: 3}
+  milfSmile: {fileID: 21300000, guid: 7b1d0fe73a772fd4e8b52d395a0c67a1, type: 3}
+  milfSmileWink: {fileID: 21300000, guid: 6510d4445dc476549b5b876bb243d094, type: 3}
+  milfSurpriseSlight: {fileID: 21300000, guid: df3ca35f63a8f2e4084ea1db8ab50186, type: 3}
+  badBoyNeutral: {fileID: 21300000, guid: 5a00028f00e30a9479bcfdc1b4c23726, type: 3}
+  badBoyAnnoyed: {fileID: 21300000, guid: a46ee6a03c3bcac4c9e91b1a6d7c092c, type: 3}
+  badBoyEmbarassed: {fileID: 21300000, guid: e5d47477721998d43896b738d409f59a, type: 3}
+  badBoySmirk: {fileID: 21300000, guid: 55b4b02618613e443af52562a8cfac0f, type: 3}
   image: {fileID: 530808056}
 --- !u!114 &530808056
 MonoBehaviour:
@@ -360,7 +336,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &664504442
 MonoBehaviour:
@@ -376,38 +352,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   managerName: MilfChapter
   eventManager: {fileID: 1611122889}
---- !u!1 &788652690
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 788652691}
-  m_Layer: 0
-  m_Name: CharacterContainer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &788652691
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 788652690}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 428.4258, y: 431.27405, z: -2861.6682}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 348044613}
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1073960783
 GameObject:
   m_ObjectHideFlags: 0
