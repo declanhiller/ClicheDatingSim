@@ -16,7 +16,7 @@ public class BadBoyController : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void OnPointerEnter(PointerEventData eventData) {
         name.text = "Valen";
-        desc.text = "He's quite the bad boy";
+        desc.text = "Fall in love with the bad boy";
     }
 
     public void OnPointerExit(PointerEventData eventData) {

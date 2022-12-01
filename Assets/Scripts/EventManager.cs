@@ -83,7 +83,7 @@ public class EventManager : MonoBehaviour {
             return;
         }
         
-        if (sceneStart.sceneName == "$end$") {
+        if (sceneStart.sceneName.Contains("$end$")) {
             StartCoroutine(SceneStartFadeOut(false, sceneStart));
             return;
         }

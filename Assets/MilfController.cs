@@ -16,7 +16,7 @@ public class MilfController : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnPointerEnter(PointerEventData eventData) {
         name.text = "Euryale";
-        desc.text = "She's the resident boss";
+        desc.text = "Fall in love with the Medusa boss";
     }
 
     public void OnPointerExit(PointerEventData eventData) {
