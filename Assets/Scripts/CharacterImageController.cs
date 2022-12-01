@@ -24,9 +24,9 @@ public class CharacterImageController : MonoBehaviour {
     }
 
     public void SetCharacter(RomanceCharacters character, Expression expression) {
-        image.enabled = true;
         
         if (character == RomanceCharacters.MILF) {
+            image.enabled = true;
             switch (expression) {
                 case Expression.Angry:
                     image.sprite = milfAngry;
@@ -45,6 +45,7 @@ public class CharacterImageController : MonoBehaviour {
                     break;
             }
         } else if (character == RomanceCharacters.BAD_BOY) {
+            image.enabled = true;
             switch (expression) {
                 case Expression.Smirk:
                     image.sprite = badBoySmirk;
@@ -60,7 +61,7 @@ public class CharacterImageController : MonoBehaviour {
                     break;
             }
         } else {
-            image.enabled = false;
+            // image.enabled = false;
         }
     }
 

@@ -329,6 +329,8 @@ public class EventManager : MonoBehaviour {
                 return "Valen";
             case RomanceCharacters.PLAYER:
                 return PlayerData.playerName;
+            case RomanceCharacters.NARRATOR:
+                return "Narrator";
         }
 
         return null;
