@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class PhotoController : MonoBehaviour, IPointerClickHandler
 {
+    [SerializeField] private Image markerImage;
     [SerializeField] private Image backgroundImage;
     [SerializeField] private Image photoImage;
     [SerializeField] private float fadeInSpeed = 2.5f;
@@ -16,7 +17,7 @@ public class PhotoController : MonoBehaviour, IPointerClickHandler
 
     private void Start()
     {
-        
+        markerImage.enabled = false;
         backgroundImage.color = new Color(backgroundImage.color.r, backgroundImage.color.g, backgroundImage.color.b, 0);
         photoImage.color = new Color(photoImage.color.r, photoImage.color.g, photoImage.color.b, 0);
         StartCoroutine(FadeIn());
@@ -26,6 +27,7 @@ public class PhotoController : MonoBehaviour, IPointerClickHandler
     {
         if (canClick)
         {
+            markerImage.enabled = false;
             StartCoroutine(FadeOut());
             canClick = false;
         }
@@ -53,5 +55,6 @@ public class PhotoController : MonoBehaviour, IPointerClickHandler
         }
 
         canClick = true;
+        markerImage.enabled = true;
     }
 }
