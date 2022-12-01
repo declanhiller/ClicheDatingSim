@@ -2203,7 +2203,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Gracen
+  m_text: Gracen Geng
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 47f77b3f158bd5a4497825a68b6e5d19, type: 2}
   m_sharedMaterial: {fileID: 7275053089284461860, guid: 47f77b3f158bd5a4497825a68b6e5d19, type: 2}
