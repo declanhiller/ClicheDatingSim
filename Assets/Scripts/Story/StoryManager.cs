@@ -127,7 +127,8 @@ public class StoryManager : MonoBehaviour {
             return new List<Vector2>();
         }
 
-        TextAsset textAsset = Resources.Load<TextAsset>(managerName);
+        TextAsset textAsset = GameObject.FindGameObjectWithTag("GameController").GetComponent<StoryHolder>().GetStory(managerName);
+        // TextAsset textAsset = Resources.Load<TextAsset>(managerName);
         string json = textAsset.text;
         // #if UNITY_EDITOR
         // json = File.ReadAllText(GetFilePath());
