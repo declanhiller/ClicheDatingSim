@@ -15,6 +15,14 @@ public class SceneController : MonoBehaviour {
         
     }
 
+    public void Prologue() {
+        
+    }
+    
+    public void ChooseCharacter() {
+        SceneManager.LoadScene("ChooseCharacterScreen");
+    }
+
     public void StartMenu() {
         SceneManager.LoadScene("StartingMenu");
     }
