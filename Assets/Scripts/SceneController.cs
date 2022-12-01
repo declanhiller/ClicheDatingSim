@@ -23,6 +23,11 @@ public class SceneController : MonoBehaviour {
         SceneManager.LoadScene("BadBoyScene3");
     }
 
+    public void BadBoyPhoto()
+    {
+        
+    }
+
     public void Name() {
         SceneManager.LoadScene("Naming");
     }

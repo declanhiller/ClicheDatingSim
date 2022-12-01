@@ -118,8 +118,11 @@ public class EventManager : MonoBehaviour {
             sceneController.ChooseCharacter();
         } else if (num == 2) {
             sceneController.BadBoyScene2();
-        }else if (num == 3) {
+        }else if (num == 3)
+        {
             sceneController.BadBoyScene3();
+        }else if(num == 4) {
+            sceneController.BadBoyPhoto();
         } else {
             sceneController.StartMenu();
         }
